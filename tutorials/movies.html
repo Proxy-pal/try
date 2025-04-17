@@ -1,0 +1,1328 @@
+<html lang="en"><head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>vplaza-Movies</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'IBM Plex Mono', monospace;
+			margin: 0;
+			padding: 0;
+			background: linear-gradient(to bottom, #121212, #1a1a1a);
+			color: #e0e0e0;
+		}
+
+		header {
+			background: rgba(20, 20, 20, 0.8);
+			backdrop-filter: blur(10px);
+			color: white;
+			padding: 15px 0;
+			text-align: center;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		}
+
+		header h1 {
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.search-container {
+			margin: 15px auto;
+			display: flex;
+			width: 90%;
+			max-width: 1200px;
+		}
+
+		#search-input {
+			flex-grow: 1;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 6px;
+			background: rgba(30, 30, 30, 0.7);
+			color: #e0e0e0;
+			backdrop-filter: blur(5px);
+		}
+
+		#search-button {
+			padding: 12px 25px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		.container {
+			width: 90%;
+			max-width: 1200px;
+			margin: 25px auto;
+		}
+
+		.movie-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.movie-card {
+			background: rgba(25, 25, 25, 0.7);
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+			cursor: pointer;
+			position: relative;
+			transition: transform 0.3s ease;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.movie-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.movie-card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.movie-card .movie-info {
+			padding: 15px;
+			flex-grow: 1;
+		}
+
+		.movie-card h2 {
+			margin-top: 0;
+			font-size: 1.2em;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.movie-card p {
+			font-size: 0.9em;
+			color: #b0b0b0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+		}
+
+		.play-button {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2em;
+			color: white;
+			background: rgba(0, 0, 0, 0.5);
+			padding: 15px;
+			border-radius: 50%;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.movie-card:hover .play-button {
+			opacity: 1;
+		}
+
+		.popup {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(30, 30, 30, 0.9);
+			padding: 20px;
+			border-radius: 12px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+			z-index: 1000;
+			display: none;
+			width: 90%;
+			max-width: 600px;
+			backdrop-filter: blur(10px);
+		}
+
+		.popup iframe {
+			width: 100%;
+			height: 300px;
+			border: none;
+			border-radius: 8px;
+		}
+
+		.popup button {
+			margin-top: 15px;
+			padding: 10px 20px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		#loading-indicator {
+			text-align: center;
+			padding: 20px;
+			display: none;
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&amp;display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<header>
+		<h1>vplaza-Movies</h1>
+		<div class="search-container">
+			<input type="text" id="search-input" placeholder="Search movies...">
+			<button id="search-button">Search</button>
+		</div>
+	</header>
+	<div class="container">
+		<div class="movie-grid" id="movie-grid">
+		<div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xmMHGz9dVRaMY6rRAlEX4W0Wdhm.jpg" alt="Novocaine">
+            <div class="movie-info">
+              <h2>Novocaine</h2>
+              <p>When the girl of his dreams is kidnapped, everyman Nate turns his inability to feel pain into an unexpected strength in his fight to get her back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//edKpE9B5qN3e559OuMCLZdW1iBZ.jpg" alt="Mickey 17">
+            <div class="movie-info">
+              <h2>Mickey 17</h2>
+              <p>Unlikely hero Mickey Barnes finds himself in the extraordinary circumstance of working for an employer who demands the ultimate commitment to the job… to die, for a living.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//tSee9gbGLfqwvjoWoCQgRZ4Sfky.jpg" alt="G20">
+            <div class="movie-info">
+              <h2>G20</h2>
+              <p>After the G20 Summit is overtaken by terrorists, President Danielle Sutton must bring all her statecraft and military experience to defend her family and her fellow leaders.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//95KmR0xNuZZ6DNESDwLKWGIBvMg.jpg" alt="The Alto Knights">
+            <div class="movie-info">
+              <h2>The Alto Knights</h2>
+              <p>Two of New York's most notorious organized crime bosses, Frank Costello and Vito Genovese, vie for control of the city's streets. Once the best of friends, petty jealousies and a series of betrayals place them on a deadly collision course that will reshape the Mafia (and America) forever.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg" alt="Captain America: Brave New World">
+            <div class="movie-info">
+              <h2>Captain America: Brave New World</h2>
+              <p>After meeting with newly elected U.S. President Thaddeus Ross, Sam finds himself in the middle of an international incident. He must discover the reason behind a nefarious global plot before the true mastermind has the entire world seeing red.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//iHf6bXPghWB6gT8kFkL1zo00x6X.jpg" alt="In the Lost Lands">
+            <div class="movie-info">
+              <h2>In the Lost Lands</h2>
+              <p>A queen sends the powerful and feared sorceress Gray Alys to the ghostly wilderness of the Lost Lands in search of a magical power, where the sorceress and her guide, the drifter Boyce must outwit and outfight man and demon.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FRFIogh3zFnVWn7Z6zcYnIbRcX.jpg" alt="A Working Man">
+            <div class="movie-info">
+              <h2>A Working Man</h2>
+              <p>Levon Cade left behind a decorated military career in the black ops to live a simple life working construction. But when his boss's daughter, who is like family to him, is taken by human traffickers, his search to bring her home uncovers a world of corruption far greater than he ever could have imagined.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg" alt="A Minecraft Movie">
+            <div class="movie-info">
+              <h2>A Minecraft Movie</h2>
+              <p>Four misfits find themselves struggling with ordinary problems when they are suddenly pulled through a mysterious portal into the Overworld: a bizarre, cubic wonderland that thrives on imagination. To get back home, they'll have to master this world while embarking on a magical quest with an unexpected, expert crafter, Steve.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oXsDTDt1MqxJreROd2cbd2FMOZ2.jpg" alt="Warfare">
+            <div class="movie-info">
+              <h2>Warfare</h2>
+              <p>A platoon of Navy SEALs embarks on a dangerous mission in Ramadi, Iraq, with the chaos and brotherhood of war retold through their memories of the event.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//SNEoUInCa5fAgwuEBMIMBGvkkh.jpg" alt="The Amateur">
+            <div class="movie-info">
+              <h2>The Amateur</h2>
+              <p>After his life is turned upside down when his wife is killed in a London terrorist attack, a brilliant but introverted CIA decoder takes matters into his own hands when his supervisors refuse to take action.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//m5x8D0bZ3eKqIVWZ5y7TnZ2oTVg.jpg" alt="Conclave">
+            <div class="movie-info">
+              <h2>Conclave</h2>
+              <p>After the unexpected death of the Pope, Cardinal Lawrence is tasked with managing the covert and ancient ritual of electing a new one. Sequestered in the Vatican with the Catholic Church’s most powerful leaders until the process is complete, Lawrence finds himself at the center of a conspiracy that could lead to its downfall.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hHPovtU4b96LHcoeEwRkGHI5btw.jpg" alt="Black Bag">
+            <div class="movie-info">
+              <h2>Black Bag</h2>
+              <p>When intelligence agent Kathryn Woodhouse is suspected of betraying the nation, her husband – also a legendary agent – faces the ultimate test of whether to be loyal to his marriage, or his country.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yqsCU5XOP2mkbFamzAqbqntmfav.jpg" alt="Sinners">
+            <div class="movie-info">
+              <h2>Sinners</h2>
+              <p>Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//lurEK87kukWNaHd0zYnsi3yzJrs.jpg" alt="Mufasa: The Lion King">
+            <div class="movie-info">
+              <h2>Mufasa: The Lion King</h2>
+              <p>Mufasa, a cub lost and alone, meets a sympathetic lion named Taka, the heir to a royal bloodline. The chance meeting sets in motion an expansive journey of a group of misfits searching for their destiny.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//n0WS2TsNcS6dtaZKzxipyO7LuCJ.jpg" alt="The Woman in the Yard">
+            <div class="movie-info">
+              <h2>The Woman in the Yard</h2>
+              <p>In the aftermath of her husband's death, widow Ramona's struggle to raise her two kids is hindered by the arrival of a mysterious woman with supernatural abilities.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oK4FFNfFHQRyGc2pmo88zpiu5Gc.jpg" alt="Drop">
+            <div class="movie-info">
+              <h2>Drop</h2>
+              <p>Violet, a widowed mother on her first date in years, arrives at an upscale restaurant where she is relieved that her date, Henry, is more charming and handsome than she expected. But their chemistry begins to curdle as Violet begins being irritated and then terrorized by a series of anonymous drops to her phone.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hqcexYHbiTBfDIdDWxrxPtVndBX.jpg" alt="Thunderbolts*">
+            <div class="movie-info">
+              <h2>Thunderbolts*</h2>
+              <p>After finding themselves ensnared in a death trap, seven disillusioned castoffs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg" alt="Star Wars">
+            <div class="movie-info">
+              <h2>Star Wars</h2>
+              <p>Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//O7REXWPANWXvX2jhQydHjAq2DV.jpg" alt="Gunslingers">
+            <div class="movie-info">
+              <h2>Gunslingers</h2>
+              <p>When the most wanted man in America surfaces in a small Kentucky town, his violent history -- and a blood-thirsty mob seeking vengeance and a king’s ransom -- soon follow. As brothers face off against one another and bullets tear the town to shreds, this lightning-fast gunslinger makes his enemies pay the ultimate price for their greed.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xfSAoBEm9MNBjmlNcDYLvLSMlnq.jpg" alt="Star Wars: Episode III - Revenge of the Sith">
+            <div class="movie-info">
+              <h2>Star Wars: Episode III - Revenge of the Sith</h2>
+              <p>The evil Darth Sidious enacts his final plan for unlimited power -- and the heroic Jedi Anakin Skywalker must choose a side.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div></div>
+		<div id="loading-indicator" style="display: none;">Loading...</div>
+	</div>
+
+	<div class="popup" id="movie-popup">
+		<iframe id="movie-iframe" src="" frameborder="0" allowfullscreen=""></iframe>
+		<button id="close-popup"><i class="bi bi-x-circle"></i> Close</button>
+	</div>
+
+	<script>
+		// ... (rest of your JavaScript code remains the same)
+      const apiKey = '00119ffd2d069c15532a335d74664364';
+      const movieGrid = document.getElementById('movie-grid');
+      const searchInput = document.getElementById('search-input');
+      const searchButton = document.getElementById('search-button');
+      const moviePopup = document.getElementById('movie-popup');
+      const movieIframe = document.getElementById('movie-iframe');
+      const closePopup = document.getElementById('close-popup');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      let page = 1;
+      let searching = false;
+      let searchQuery = '';
+
+      async function fetchMovies(url) {
+        loadingIndicator.style.display = 'block';
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          loadingIndicator.style.display = 'none';
+          return data.results;
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+          loadingIndicator.style.display = 'none';
+          return [];
+        }
+      }
+
+      async function fetchTrendingMovies() {
+        const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      async function searchMovies(query) {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      function displayMovies(movies) {
+        movies.forEach(movie => {
+          const movieCard = document.createElement('div');
+          movieCard.classList.add('movie-card');
+
+          const imageUrl = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
+          const description = movie.overview;
+
+          movieCard.innerHTML = `
+            <img src="${imageUrl}" alt="${movie.title}">
+            <div class="movie-info">
+              <h2>${movie.title}</h2>
+              <p>${description}</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          `;
+          movieCard.addEventListener('click', () => {
+            movieIframe.src = `/active/embed?url=https://moviesapi.club/movie/${movie.id}`;
+            moviePopup.style.display = 'block';
+          });
+          movieGrid.appendChild(movieCard);
+        });
+      }
+
+      function handleScroll() {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+          if (searching) {
+            searchMovies(searchQuery);
+          } else {
+            fetchTrendingMovies();
+          }
+        }
+      }
+
+      fetchTrendingMovies();
+
+      searchButton.addEventListener('click', () => {
+        page = 1;
+        movieGrid.innerHTML = '';
+        searchQuery = searchInput.value.trim();
+        if (searchQuery) {
+          searching = true;
+          searchMovies(searchQuery);
+        } else {
+          searching = false;
+          fetchTrendingMovies();
+        }
+      });
+
+      searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          searchButton.click();
+        }
+      });
+
+      closePopup.addEventListener('click', () => {
+        moviePopup.style.display = 'none';
+        movieIframe.src = '';
+      });
+
+      window.addEventListener('scroll', handleScroll);
+	</script>
+
+
+
+</body></html><head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>vplaza-Movies</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'IBM Plex Mono', monospace;
+			margin: 0;
+			padding: 0;
+			background: linear-gradient(to bottom, #121212, #1a1a1a);
+			color: #e0e0e0;
+		}
+
+		header {
+			background: rgba(20, 20, 20, 0.8);
+			backdrop-filter: blur(10px);
+			color: white;
+			padding: 15px 0;
+			text-align: center;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		}
+
+		header h1 {
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.search-container {
+			margin: 15px auto;
+			display: flex;
+			width: 90%;
+			max-width: 1200px;
+		}
+
+		#search-input {
+			flex-grow: 1;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 6px;
+			background: rgba(30, 30, 30, 0.7);
+			color: #e0e0e0;
+			backdrop-filter: blur(5px);
+		}
+
+		#search-button {
+			padding: 12px 25px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		.container {
+			width: 90%;
+			max-width: 1200px;
+			margin: 25px auto;
+		}
+
+		.movie-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.movie-card {
+			background: rgba(25, 25, 25, 0.7);
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+			cursor: pointer;
+			position: relative;
+			transition: transform 0.3s ease;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.movie-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.movie-card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.movie-card .movie-info {
+			padding: 15px;
+			flex-grow: 1;
+		}
+
+		.movie-card h2 {
+			margin-top: 0;
+			font-size: 1.2em;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.movie-card p {
+			font-size: 0.9em;
+			color: #b0b0b0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+		}
+
+		.play-button {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2em;
+			color: white;
+			background: rgba(0, 0, 0, 0.5);
+			padding: 15px;
+			border-radius: 50%;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.movie-card:hover .play-button {
+			opacity: 1;
+		}
+
+		.popup {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(30, 30, 30, 0.9);
+			padding: 20px;
+			border-radius: 12px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+			z-index: 1000;
+			display: none;
+			width: 90%;
+			max-width: 600px;
+			backdrop-filter: blur(10px);
+		}
+
+		.popup iframe {
+			width: 100%;
+			height: 300px;
+			border: none;
+			border-radius: 8px;
+		}
+
+		.popup button {
+			margin-top: 15px;
+			padding: 10px 20px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		#loading-indicator {
+			text-align: center;
+			padding: 20px;
+			display: none;
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&amp;display=swap" rel="stylesheet">
+</head><body>
+	<header>
+		<h1>vplaza-Movies</h1>
+		<div class="search-container">
+			<input type="text" id="search-input" placeholder="Search movies...">
+			<button id="search-button">Search</button>
+		</div>
+	</header>
+	<div class="container">
+		<div class="movie-grid" id="movie-grid">
+		<div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xmMHGz9dVRaMY6rRAlEX4W0Wdhm.jpg" alt="Novocaine">
+            <div class="movie-info">
+              <h2>Novocaine</h2>
+              <p>When the girl of his dreams is kidnapped, everyman Nate turns his inability to feel pain into an unexpected strength in his fight to get her back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//edKpE9B5qN3e559OuMCLZdW1iBZ.jpg" alt="Mickey 17">
+            <div class="movie-info">
+              <h2>Mickey 17</h2>
+              <p>Unlikely hero Mickey Barnes finds himself in the extraordinary circumstance of working for an employer who demands the ultimate commitment to the job… to die, for a living.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//tSee9gbGLfqwvjoWoCQgRZ4Sfky.jpg" alt="G20">
+            <div class="movie-info">
+              <h2>G20</h2>
+              <p>After the G20 Summit is overtaken by terrorists, President Danielle Sutton must bring all her statecraft and military experience to defend her family and her fellow leaders.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//95KmR0xNuZZ6DNESDwLKWGIBvMg.jpg" alt="The Alto Knights">
+            <div class="movie-info">
+              <h2>The Alto Knights</h2>
+              <p>Two of New York's most notorious organized crime bosses, Frank Costello and Vito Genovese, vie for control of the city's streets. Once the best of friends, petty jealousies and a series of betrayals place them on a deadly collision course that will reshape the Mafia (and America) forever.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg" alt="Captain America: Brave New World">
+            <div class="movie-info">
+              <h2>Captain America: Brave New World</h2>
+              <p>After meeting with newly elected U.S. President Thaddeus Ross, Sam finds himself in the middle of an international incident. He must discover the reason behind a nefarious global plot before the true mastermind has the entire world seeing red.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//iHf6bXPghWB6gT8kFkL1zo00x6X.jpg" alt="In the Lost Lands">
+            <div class="movie-info">
+              <h2>In the Lost Lands</h2>
+              <p>A queen sends the powerful and feared sorceress Gray Alys to the ghostly wilderness of the Lost Lands in search of a magical power, where the sorceress and her guide, the drifter Boyce must outwit and outfight man and demon.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FRFIogh3zFnVWn7Z6zcYnIbRcX.jpg" alt="A Working Man">
+            <div class="movie-info">
+              <h2>A Working Man</h2>
+              <p>Levon Cade left behind a decorated military career in the black ops to live a simple life working construction. But when his boss's daughter, who is like family to him, is taken by human traffickers, his search to bring her home uncovers a world of corruption far greater than he ever could have imagined.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg" alt="A Minecraft Movie">
+            <div class="movie-info">
+              <h2>A Minecraft Movie</h2>
+              <p>Four misfits find themselves struggling with ordinary problems when they are suddenly pulled through a mysterious portal into the Overworld: a bizarre, cubic wonderland that thrives on imagination. To get back home, they'll have to master this world while embarking on a magical quest with an unexpected, expert crafter, Steve.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oXsDTDt1MqxJreROd2cbd2FMOZ2.jpg" alt="Warfare">
+            <div class="movie-info">
+              <h2>Warfare</h2>
+              <p>A platoon of Navy SEALs embarks on a dangerous mission in Ramadi, Iraq, with the chaos and brotherhood of war retold through their memories of the event.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//SNEoUInCa5fAgwuEBMIMBGvkkh.jpg" alt="The Amateur">
+            <div class="movie-info">
+              <h2>The Amateur</h2>
+              <p>After his life is turned upside down when his wife is killed in a London terrorist attack, a brilliant but introverted CIA decoder takes matters into his own hands when his supervisors refuse to take action.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//m5x8D0bZ3eKqIVWZ5y7TnZ2oTVg.jpg" alt="Conclave">
+            <div class="movie-info">
+              <h2>Conclave</h2>
+              <p>After the unexpected death of the Pope, Cardinal Lawrence is tasked with managing the covert and ancient ritual of electing a new one. Sequestered in the Vatican with the Catholic Church’s most powerful leaders until the process is complete, Lawrence finds himself at the center of a conspiracy that could lead to its downfall.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hHPovtU4b96LHcoeEwRkGHI5btw.jpg" alt="Black Bag">
+            <div class="movie-info">
+              <h2>Black Bag</h2>
+              <p>When intelligence agent Kathryn Woodhouse is suspected of betraying the nation, her husband – also a legendary agent – faces the ultimate test of whether to be loyal to his marriage, or his country.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yqsCU5XOP2mkbFamzAqbqntmfav.jpg" alt="Sinners">
+            <div class="movie-info">
+              <h2>Sinners</h2>
+              <p>Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//lurEK87kukWNaHd0zYnsi3yzJrs.jpg" alt="Mufasa: The Lion King">
+            <div class="movie-info">
+              <h2>Mufasa: The Lion King</h2>
+              <p>Mufasa, a cub lost and alone, meets a sympathetic lion named Taka, the heir to a royal bloodline. The chance meeting sets in motion an expansive journey of a group of misfits searching for their destiny.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//n0WS2TsNcS6dtaZKzxipyO7LuCJ.jpg" alt="The Woman in the Yard">
+            <div class="movie-info">
+              <h2>The Woman in the Yard</h2>
+              <p>In the aftermath of her husband's death, widow Ramona's struggle to raise her two kids is hindered by the arrival of a mysterious woman with supernatural abilities.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oK4FFNfFHQRyGc2pmo88zpiu5Gc.jpg" alt="Drop">
+            <div class="movie-info">
+              <h2>Drop</h2>
+              <p>Violet, a widowed mother on her first date in years, arrives at an upscale restaurant where she is relieved that her date, Henry, is more charming and handsome than she expected. But their chemistry begins to curdle as Violet begins being irritated and then terrorized by a series of anonymous drops to her phone.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hqcexYHbiTBfDIdDWxrxPtVndBX.jpg" alt="Thunderbolts*">
+            <div class="movie-info">
+              <h2>Thunderbolts*</h2>
+              <p>After finding themselves ensnared in a death trap, seven disillusioned castoffs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg" alt="Star Wars">
+            <div class="movie-info">
+              <h2>Star Wars</h2>
+              <p>Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//O7REXWPANWXvX2jhQydHjAq2DV.jpg" alt="Gunslingers">
+            <div class="movie-info">
+              <h2>Gunslingers</h2>
+              <p>When the most wanted man in America surfaces in a small Kentucky town, his violent history -- and a blood-thirsty mob seeking vengeance and a king’s ransom -- soon follow. As brothers face off against one another and bullets tear the town to shreds, this lightning-fast gunslinger makes his enemies pay the ultimate price for their greed.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xfSAoBEm9MNBjmlNcDYLvLSMlnq.jpg" alt="Star Wars: Episode III - Revenge of the Sith">
+            <div class="movie-info">
+              <h2>Star Wars: Episode III - Revenge of the Sith</h2>
+              <p>The evil Darth Sidious enacts his final plan for unlimited power -- and the heroic Jedi Anakin Skywalker must choose a side.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div></div>
+		<div id="loading-indicator" style="display: none;">Loading...</div>
+	</div>
+
+	<div class="popup" id="movie-popup">
+		<iframe id="movie-iframe" src="" frameborder="0" allowfullscreen=""></iframe>
+		<button id="close-popup"><i class="bi bi-x-circle"></i> Close</button>
+	</div>
+
+	<script>
+		// ... (rest of your JavaScript code remains the same)
+      const apiKey = '00119ffd2d069c15532a335d74664364';
+      const movieGrid = document.getElementById('movie-grid');
+      const searchInput = document.getElementById('search-input');
+      const searchButton = document.getElementById('search-button');
+      const moviePopup = document.getElementById('movie-popup');
+      const movieIframe = document.getElementById('movie-iframe');
+      const closePopup = document.getElementById('close-popup');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      let page = 1;
+      let searching = false;
+      let searchQuery = '';
+
+      async function fetchMovies(url) {
+        loadingIndicator.style.display = 'block';
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          loadingIndicator.style.display = 'none';
+          return data.results;
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+          loadingIndicator.style.display = 'none';
+          return [];
+        }
+      }
+
+      async function fetchTrendingMovies() {
+        const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      async function searchMovies(query) {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      function displayMovies(movies) {
+        movies.forEach(movie => {
+          const movieCard = document.createElement('div');
+          movieCard.classList.add('movie-card');
+
+          const imageUrl = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
+          const description = movie.overview;
+
+          movieCard.innerHTML = `
+            <img src="${imageUrl}" alt="${movie.title}">
+            <div class="movie-info">
+              <h2>${movie.title}</h2>
+              <p>${description}</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          `;
+          movieCard.addEventListener('click', () => {
+            movieIframe.src = `/active/embed?url=https://moviesapi.club/movie/${movie.id}`;
+            moviePopup.style.display = 'block';
+          });
+          movieGrid.appendChild(movieCard);
+        });
+      }
+
+      function handleScroll() {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+          if (searching) {
+            searchMovies(searchQuery);
+          } else {
+            fetchTrendingMovies();
+          }
+        }
+      }
+
+      fetchTrendingMovies();
+
+      searchButton.addEventListener('click', () => {
+        page = 1;
+        movieGrid.innerHTML = '';
+        searchQuery = searchInput.value.trim();
+        if (searchQuery) {
+          searching = true;
+          searchMovies(searchQuery);
+        } else {
+          searching = false;
+          fetchTrendingMovies();
+        }
+      });
+
+      searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          searchButton.click();
+        }
+      });
+
+      closePopup.addEventListener('click', () => {
+        moviePopup.style.display = 'none';
+        movieIframe.src = '';
+      });
+
+      window.addEventListener('scroll', handleScroll);
+	</script>
+
+
+
+</body><html lang="en"><head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>vplaza-Movies</title>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+	<style>
+		body {
+			font-family: 'IBM Plex Mono', monospace;
+			margin: 0;
+			padding: 0;
+			background: linear-gradient(to bottom, #121212, #1a1a1a);
+			color: #e0e0e0;
+		}
+
+		header {
+			background: rgba(20, 20, 20, 0.8);
+			backdrop-filter: blur(10px);
+			color: white;
+			padding: 15px 0;
+			text-align: center;
+			position: sticky;
+			top: 0;
+			z-index: 100;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+		}
+
+		header h1 {
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			-webkit-background-clip: text;
+			-webkit-text-fill-color: transparent;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.search-container {
+			margin: 15px auto;
+			display: flex;
+			width: 90%;
+			max-width: 1200px;
+		}
+
+		#search-input {
+			flex-grow: 1;
+			padding: 12px;
+			border: 1px solid rgba(255, 255, 255, 0.1);
+			border-radius: 6px;
+			background: rgba(30, 30, 30, 0.7);
+			color: #e0e0e0;
+			backdrop-filter: blur(5px);
+		}
+
+		#search-button {
+			padding: 12px 25px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		.container {
+			width: 90%;
+			max-width: 1200px;
+			margin: 25px auto;
+		}
+
+		.movie-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+			gap: 20px;
+		}
+
+		.movie-card {
+			background: rgba(25, 25, 25, 0.7);
+			border-radius: 12px;
+			overflow: hidden;
+			box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+			cursor: pointer;
+			position: relative;
+			transition: transform 0.3s ease;
+			display: flex;
+			flex-direction: column;
+		}
+
+		.movie-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.movie-card img {
+			width: 100%;
+			height: 250px;
+			object-fit: cover;
+		}
+
+		.movie-card .movie-info {
+			padding: 15px;
+			flex-grow: 1;
+		}
+
+		.movie-card h2 {
+			margin-top: 0;
+			font-size: 1.2em;
+			text-shadow: 0 0 8px rgba(255, 107, 107, 0.8), 0 0 12px rgba(200, 75, 255, 0.8);
+		}
+
+		.movie-card p {
+			font-size: 0.9em;
+			color: #b0b0b0;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			text-shadow: 0 0 3px rgba(255, 255, 255, 0.1);
+		}
+
+		.play-button {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			font-size: 2em;
+			color: white;
+			background: rgba(0, 0, 0, 0.5);
+			padding: 15px;
+			border-radius: 50%;
+			opacity: 0;
+			transition: opacity 0.3s ease;
+		}
+
+		.movie-card:hover .play-button {
+			opacity: 1;
+		}
+
+		.popup {
+			position: fixed;
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+			background: rgba(30, 30, 30, 0.9);
+			padding: 20px;
+			border-radius: 12px;
+			box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+			z-index: 1000;
+			display: none;
+			width: 90%;
+			max-width: 600px;
+			backdrop-filter: blur(10px);
+		}
+
+		.popup iframe {
+			width: 100%;
+			height: 300px;
+			border: none;
+			border-radius: 8px;
+		}
+
+		.popup button {
+			margin-top: 15px;
+			padding: 10px 20px;
+			background: linear-gradient(to right, #ff6b6b, #c84bff);
+			color: white;
+			border: none;
+			border-radius: 6px;
+			cursor: pointer;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+		}
+
+		#loading-indicator {
+			text-align: center;
+			padding: 20px;
+			display: none;
+		}
+	</style>
+	<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono&amp;display=swap" rel="stylesheet">
+</head>
+
+<body>
+	<header>
+		<h1>vplaza-Movies</h1>
+		<div class="search-container">
+			<input type="text" id="search-input" placeholder="Search movies...">
+			<button id="search-button">Search</button>
+		</div>
+	</header>
+	<div class="container">
+		<div class="movie-grid" id="movie-grid">
+		<div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xmMHGz9dVRaMY6rRAlEX4W0Wdhm.jpg" alt="Novocaine">
+            <div class="movie-info">
+              <h2>Novocaine</h2>
+              <p>When the girl of his dreams is kidnapped, everyman Nate turns his inability to feel pain into an unexpected strength in his fight to get her back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//edKpE9B5qN3e559OuMCLZdW1iBZ.jpg" alt="Mickey 17">
+            <div class="movie-info">
+              <h2>Mickey 17</h2>
+              <p>Unlikely hero Mickey Barnes finds himself in the extraordinary circumstance of working for an employer who demands the ultimate commitment to the job… to die, for a living.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//tSee9gbGLfqwvjoWoCQgRZ4Sfky.jpg" alt="G20">
+            <div class="movie-info">
+              <h2>G20</h2>
+              <p>After the G20 Summit is overtaken by terrorists, President Danielle Sutton must bring all her statecraft and military experience to defend her family and her fellow leaders.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//95KmR0xNuZZ6DNESDwLKWGIBvMg.jpg" alt="The Alto Knights">
+            <div class="movie-info">
+              <h2>The Alto Knights</h2>
+              <p>Two of New York's most notorious organized crime bosses, Frank Costello and Vito Genovese, vie for control of the city's streets. Once the best of friends, petty jealousies and a series of betrayals place them on a deadly collision course that will reshape the Mafia (and America) forever.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//pzIddUEMWhWzfvLI3TwxUG2wGoi.jpg" alt="Captain America: Brave New World">
+            <div class="movie-info">
+              <h2>Captain America: Brave New World</h2>
+              <p>After meeting with newly elected U.S. President Thaddeus Ross, Sam finds himself in the middle of an international incident. He must discover the reason behind a nefarious global plot before the true mastermind has the entire world seeing red.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//iHf6bXPghWB6gT8kFkL1zo00x6X.jpg" alt="In the Lost Lands">
+            <div class="movie-info">
+              <h2>In the Lost Lands</h2>
+              <p>A queen sends the powerful and feared sorceress Gray Alys to the ghostly wilderness of the Lost Lands in search of a magical power, where the sorceress and her guide, the drifter Boyce must outwit and outfight man and demon.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FRFIogh3zFnVWn7Z6zcYnIbRcX.jpg" alt="A Working Man">
+            <div class="movie-info">
+              <h2>A Working Man</h2>
+              <p>Levon Cade left behind a decorated military career in the black ops to live a simple life working construction. But when his boss's daughter, who is like family to him, is taken by human traffickers, his search to bring her home uncovers a world of corruption far greater than he ever could have imagined.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yFHHfHcUgGAxziP1C3lLt0q2T4s.jpg" alt="A Minecraft Movie">
+            <div class="movie-info">
+              <h2>A Minecraft Movie</h2>
+              <p>Four misfits find themselves struggling with ordinary problems when they are suddenly pulled through a mysterious portal into the Overworld: a bizarre, cubic wonderland that thrives on imagination. To get back home, they'll have to master this world while embarking on a magical quest with an unexpected, expert crafter, Steve.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oXsDTDt1MqxJreROd2cbd2FMOZ2.jpg" alt="Warfare">
+            <div class="movie-info">
+              <h2>Warfare</h2>
+              <p>A platoon of Navy SEALs embarks on a dangerous mission in Ramadi, Iraq, with the chaos and brotherhood of war retold through their memories of the event.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//SNEoUInCa5fAgwuEBMIMBGvkkh.jpg" alt="The Amateur">
+            <div class="movie-info">
+              <h2>The Amateur</h2>
+              <p>After his life is turned upside down when his wife is killed in a London terrorist attack, a brilliant but introverted CIA decoder takes matters into his own hands when his supervisors refuse to take action.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//m5x8D0bZ3eKqIVWZ5y7TnZ2oTVg.jpg" alt="Conclave">
+            <div class="movie-info">
+              <h2>Conclave</h2>
+              <p>After the unexpected death of the Pope, Cardinal Lawrence is tasked with managing the covert and ancient ritual of electing a new one. Sequestered in the Vatican with the Catholic Church’s most powerful leaders until the process is complete, Lawrence finds himself at the center of a conspiracy that could lead to its downfall.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hHPovtU4b96LHcoeEwRkGHI5btw.jpg" alt="Black Bag">
+            <div class="movie-info">
+              <h2>Black Bag</h2>
+              <p>When intelligence agent Kathryn Woodhouse is suspected of betraying the nation, her husband – also a legendary agent – faces the ultimate test of whether to be loyal to his marriage, or his country.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//yqsCU5XOP2mkbFamzAqbqntmfav.jpg" alt="Sinners">
+            <div class="movie-info">
+              <h2>Sinners</h2>
+              <p>Trying to leave their troubled lives behind, twin brothers return to their hometown to start again, only to discover that an even greater evil is waiting to welcome them back.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//lurEK87kukWNaHd0zYnsi3yzJrs.jpg" alt="Mufasa: The Lion King">
+            <div class="movie-info">
+              <h2>Mufasa: The Lion King</h2>
+              <p>Mufasa, a cub lost and alone, meets a sympathetic lion named Taka, the heir to a royal bloodline. The chance meeting sets in motion an expansive journey of a group of misfits searching for their destiny.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//n0WS2TsNcS6dtaZKzxipyO7LuCJ.jpg" alt="The Woman in the Yard">
+            <div class="movie-info">
+              <h2>The Woman in the Yard</h2>
+              <p>In the aftermath of her husband's death, widow Ramona's struggle to raise her two kids is hindered by the arrival of a mysterious woman with supernatural abilities.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//oK4FFNfFHQRyGc2pmo88zpiu5Gc.jpg" alt="Drop">
+            <div class="movie-info">
+              <h2>Drop</h2>
+              <p>Violet, a widowed mother on her first date in years, arrives at an upscale restaurant where she is relieved that her date, Henry, is more charming and handsome than she expected. But their chemistry begins to curdle as Violet begins being irritated and then terrorized by a series of anonymous drops to her phone.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//hqcexYHbiTBfDIdDWxrxPtVndBX.jpg" alt="Thunderbolts*">
+            <div class="movie-info">
+              <h2>Thunderbolts*</h2>
+              <p>After finding themselves ensnared in a death trap, seven disillusioned castoffs must embark on a dangerous mission that will force them to confront the darkest corners of their pasts.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg" alt="Star Wars">
+            <div class="movie-info">
+              <h2>Star Wars</h2>
+              <p>Princess Leia is captured and held hostage by the evil Imperial forces in their effort to take over the galactic Empire. Venturesome Luke Skywalker and dashing captain Han Solo team together with the loveable robot duo R2-D2 and C-3PO to rescue the beautiful princess and restore peace and justice in the Empire.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//O7REXWPANWXvX2jhQydHjAq2DV.jpg" alt="Gunslingers">
+            <div class="movie-info">
+              <h2>Gunslingers</h2>
+              <p>When the most wanted man in America surfaces in a small Kentucky town, his violent history -- and a blood-thirsty mob seeking vengeance and a king’s ransom -- soon follow. As brothers face off against one another and bullets tear the town to shreds, this lightning-fast gunslinger makes his enemies pay the ultimate price for their greed.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div><div class="movie-card">
+            <img src="https://image.tmdb.org/t/p/w500//xfSAoBEm9MNBjmlNcDYLvLSMlnq.jpg" alt="Star Wars: Episode III - Revenge of the Sith">
+            <div class="movie-info">
+              <h2>Star Wars: Episode III - Revenge of the Sith</h2>
+              <p>The evil Darth Sidious enacts his final plan for unlimited power -- and the heroic Jedi Anakin Skywalker must choose a side.</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          </div></div>
+		<div id="loading-indicator" style="display: none;">Loading...</div>
+	</div>
+
+	<div class="popup" id="movie-popup">
+		<iframe id="movie-iframe" src="" frameborder="0" allowfullscreen=""></iframe>
+		<button id="close-popup"><i class="bi bi-x-circle"></i> Close</button>
+	</div>
+
+	<script>
+		// ... (rest of your JavaScript code remains the same)
+      const apiKey = '00119ffd2d069c15532a335d74664364';
+      const movieGrid = document.getElementById('movie-grid');
+      const searchInput = document.getElementById('search-input');
+      const searchButton = document.getElementById('search-button');
+      const moviePopup = document.getElementById('movie-popup');
+      const movieIframe = document.getElementById('movie-iframe');
+      const closePopup = document.getElementById('close-popup');
+      const loadingIndicator = document.getElementById('loading-indicator');
+      let page = 1;
+      let searching = false;
+      let searchQuery = '';
+
+      async function fetchMovies(url) {
+        loadingIndicator.style.display = 'block';
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          loadingIndicator.style.display = 'none';
+          return data.results;
+        } catch (error) {
+          console.error('Error fetching movies:', error);
+          loadingIndicator.style.display = 'none';
+          return [];
+        }
+      }
+
+      async function fetchTrendingMovies() {
+        const url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      async function searchMovies(query) {
+        const url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}&page=${page}`;
+        const movies = await fetchMovies(url);
+        displayMovies(movies);
+        page++;
+      }
+
+      function displayMovies(movies) {
+        movies.forEach(movie => {
+          const movieCard = document.createElement('div');
+          movieCard.classList.add('movie-card');
+
+          const imageUrl = `https://image.tmdb.org/t/p/w500/${movie.poster_path}`;
+          const description = movie.overview;
+
+          movieCard.innerHTML = `
+            <img src="${imageUrl}" alt="${movie.title}">
+            <div class="movie-info">
+              <h2>${movie.title}</h2>
+              <p>${description}</p>
+            </div>
+            <div class="play-button"><i class="bi bi-play-circle-fill"></i></div>
+          `;
+          movieCard.addEventListener('click', () => {
+            movieIframe.src = `/active/embed?url=https://moviesapi.club/movie/${movie.id}`;
+            moviePopup.style.display = 'block';
+          });
+          movieGrid.appendChild(movieCard);
+        });
+      }
+
+      function handleScroll() {
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 200) {
+          if (searching) {
+            searchMovies(searchQuery);
+          } else {
+            fetchTrendingMovies();
+          }
+        }
+      }
+
+      fetchTrendingMovies();
+
+      searchButton.addEventListener('click', () => {
+        page = 1;
+        movieGrid.innerHTML = '';
+        searchQuery = searchInput.value.trim();
+        if (searchQuery) {
+          searching = true;
+          searchMovies(searchQuery);
+        } else {
+          searching = false;
+          fetchTrendingMovies();
+        }
+      });
+
+      searchInput.addEventListener('keypress', (event) => {
+        if (event.key === 'Enter') {
+          searchButton.click();
+        }
+      });
+
+      closePopup.addEventListener('click', () => {
+        moviePopup.style.display = 'none';
+        movieIframe.src = '';
+      });
+
+      window.addEventListener('scroll', handleScroll);
+	</script>
+
+
+
+</body></html>
