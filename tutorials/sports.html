@@ -1,0 +1,1102 @@
+<html><head>
+	<title>IPTV Guide</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			display: flex;
+			margin: 0;
+			height: 100vh;
+			overflow: hidden;
+		}
+
+		#guide {
+			width: 250px;
+			background-color: #333;
+			color: white;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#search-bar {
+			padding: 10px;
+			background-color: #444;
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
+
+		#search-bar input {
+			width: calc(100% - 22px);
+			padding: 8px;
+			background-color: #555;
+			border: none;
+			color: white;
+		}
+
+		#guide ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			overflow-y: auto;
+		}
+
+		#guide li {
+			padding: 10px;
+			cursor: pointer;
+			border-bottom: 1px solid #555;
+		}
+
+		#guide li:hover {
+			background-color: #555;
+		}
+
+		#player {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#embedded-player {
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		#error-message {
+			display: none;
+			background-color: #fdd;
+			padding: 10px;
+			border: 1px solid red;
+			margin: 10px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="guide">
+		<div id="search-bar">
+			<input type="text" id="channel-search" placeholder="Search channels...">
+  </div>
+			<ul><li>SkySportsMainEvent[UK]</li><li>SkySportsNews[UK]</li><li>SkySportsAction[UK]</li><li>SkySportsArena[UK]</li><li>SkySportsF1[UK]</li><li>SkySportsFootball[UK]</li><li>SkySportsPremierLeague[UK]</li><li>SkySportsGolf[UK]</li><li>SkySportsTennis[UK]</li><li>SkySportsMix[UK]</li><li>SkySportsRacing[UK]</li><li>TNTSports1[UK]</li><li>TNTSports2[UK]</li><li>TNTSports3[UK]</li><li>TNTSports4[UK]</li><li>TNTSports5[UK]</li><li>TNTSports6[UK]</li><li>PremierSports1[UK]</li><li>PremierSports2[UK]</li><li>BBCScotland[UK]</li><li>ITV1[UK]</li><li>ITV2[UK]</li><li>ITV3[UK]</li><li>ITV4[UK]</li><li>BTN[USA]</li><li>Canal11[Portugal]</li><li>DigiSport1[Romania]</li><li>DigiSport2[Romania]</li><li>DigiSport3[Romania]</li><li>DigiSport4[Romania]</li><li>ESPN[USA]</li><li>ESPN2[USA]</li><li>ESPNDeportes[USA]</li><li>ESPNU[USA]</li><li>ElevenSports1[Portugal]</li><li>ElevenSports2[Portugal]</li><li>ElevenSports3[Portugal]</li><li>ElevenSports4[Portugal]</li><li>ElevenSports5[Portugal]</li><li>ElevenSports6[Portugal]</li><li>FOXSports1[USA]</li><li>FOXSports2[USA]</li><li>FoxSports506[Australia]</li><li>GOLFChannel[USA]</li><li>NBATV[USA]</li><li>NFLNetwork[USA]</li><li>NFLRedzone[USA]</li><li>NHLNetwork[USA]</li><li>NovaSports1[Greece]</li><li>NovaSports2[Greece]</li><li>NovaSports3[Greece]</li><li>NovaSports4[Greece]</li><li>NovaSports5[Greece]</li><li>NovaSports6[Greece]</li><li>NovaSportsStart[Greece]</li><li>OrangeSport1[Romania]</li><li>OrangeSport2[Romania]</li><li>OrangeSport3[Romania]</li><li>OrangeSport4[Romania]</li><li>PrimaSport1[Romania]</li><li>PrimaSport2[Romania]</li><li>PrimaSport3[Romania]</li><li>PrimaSport4[Romania]</li><li>ProArena[Romania]</li><li>SECNetwork[USA]</li><li>SkyBundesliga[Germany]</li><li>SkyBundesliga1[Germany]</li><li>SkyBundesliga2[Germany]</li><li>SkyBundesliga3[Germany]</li><li>SkyBundesliga4[Germany]</li><li>SkyBundesliga5[Germany]</li><li>SkyBundesliga6[Germany]</li><li>SkyBundesliga7[Germany]</li><li>SkyBundesliga8[Germany]</li><li>SkyBundesliga9[Germany]</li><li>SkySport1[Germany]</li><li>SkySport10[Germany]</li><li>SkySport2[Germany]</li><li>SkySport3[Germany]</li><li>SkySport4[Germany]</li><li>SkySport5[Germany]</li><li>SkySport6[Germany]</li><li>SkySport7[Germany]</li><li>SkySport8[Germany]</li><li>SkySport9[Germany]</li><li>SkySportTennis[Germany]</li><li>SkySportTopEvent[Germany]</li><li>SportTV1[Portugal]</li><li>SportTV2[Portugal]</li><li>SportTV3[Portugal]</li><li>SportTV5[Portugal]</li><li>SportTV4[Portugal]</li><li>SportTV6[Portugal]</li><li>Sportklub[Serbia]</li><li>Sportklub1[Serbia]</li><li>Sportklub2[Serbia]</li><li>Sportklub3[Serbia]</li><li>Sportklub4[Serbia]</li><li>SuperSportAction[SouthAfrica]</li><li>SuperSportCricket[SouthAfrica]</li><li>SuperSportFootball[SouthAfrica]</li><li>SuperSportGolf[SouthAfrica]</li><li>SuperSportGrandstand[SouthAfrica]</li><li>SuperSportLaLiga[SouthAfrica]</li><li>SuperSportMotorsport[SouthAfrica]</li><li>SuperSportPSL[SouthAfrica]</li><li>SuperSportPremierLeague[SouthAfrica]</li><li>SuperSportRugby[SouthAfrica]</li><li>SuperSportTennis[SouthAfrica]</li><li>SuperSportVariety1[SouthAfrica]</li><li>SuperSportVariety2[SouthAfrica]</li><li>SuperSportVariety3[SouthAfrica]</li><li>SuperSportVariety4[SouthAfrica]</li><li>TSN1[Canada]</li><li>TSN2[Canada]</li><li>TSN3[Canada]</li><li>TSN4[Canada]</li><li>TSN5[Canada]</li><li>TennisChannel[USA]</li><li>TennisChannelPlus1[USA]</li><li>TennisChannelPlus10[USA]</li><li>TennisChannelPlus11[USA]</li><li>TennisChannelPlus12[USA]</li><li>TennisChannelPlus13[USA]</li><li>TennisChannelPlus14[USA]</li><li>TennisChannelPlus2[USA]</li><li>TennisChannelPlus3[USA]</li><li>TennisChannelPlus4[USA]</li><li>TennisChannelPlus5[USA]</li><li>TennisChannelPlus6[USA]</li><li>TennisChannelPlus7[USA]</li><li>TennisChannelPlus8[USA]</li><li>TennisChannelPlus9[USA]</li><li>USANetwork[USA]</li><li>DAZN1Deutschland[Germany]</li><li>DAZN2Deutschland[Germany]</li><li>Antena1[Romania]</li><li>YES[USA]</li><li>SportklubFight[Serbia]</li><li>MLBNetwork[USA]</li><li>BallySportsDetroit[USA]</li><li>BallySportsFlorida[USA]</li><li>BallySportsSun[USA]</li><li>BallySportsSanDiego[USA]</li><li>BallySportsMidwest[USA]</li><li>BallySportsNorth[USA]</li><li>BallySportsEast[USA]</li><li>BallySportsWest[USA]</li><li>BallySportsOhio[USA]</li><li>BallySportsOklahoma[USA]</li><li>SportsnetOne[Canada]</li><li>SportsnetPacific[Canada]</li><li>SportsnetOntario[Canada]</li><li>SportsnetEast[Canada]</li><li>SportsnetWest[Canada]</li><li>SportsnetWorld[Canada]</li><li>Sportsnet360[Canada]</li><li>AeNetworks[USA]</li><li>AbcTv[USA]</li><li>AMC[USA]</li><li>AnimalPlanet[USA]</li><li>BBCAmerica[USA]</li><li>BET[USA]</li><li>DisneyChannel[USA]</li><li>FoxNews[USA]</li><li>CBSSN[USA]</li><li>BravoTV[USA]</li><li>CNN[USA]</li><li>InvestigationDiscovery[USA]</li><li>Lifetime[USA]</li><li>History[USA]</li><li>EEntertainement[USA]</li><li>DisneyJR[USA]</li><li>ComedyCentral[USA]</li><li>DestinationAmerica[USA]</li><li>DiscoveryChannel[USA]</li><li>Boomerang[USA]</li><li>FoodNetwork[USA]</li><li>Freeform[USA]</li><li>CNBC[USA]</li><li>CW[USA]</li><li>HLN[USA]</li><li>LifetimeMoviesNetwork[USA]</li><li>ESPNNews[USA]</li><li>Fox[USA]</li><li>Cinemax[USA]</li><li>MSNBC[USA]</li><li>NationalGeographic[USA]</li><li>Syfy[USA]</li><li>Wnyw[USA]</li><li>CBS[USA]</li><li>Univision[USA]</li><li>TvLand[USA]</li><li>TLC[USA]</li><li>HGTV[USA]</li><li>NBC[USA]</li><li>HBO[USA]</li><li>Showtime[USA]</li><li>Nicktoons[USA]</li><li>ABCNews[USA]</li><li>NickelodeonTV[USA]</li><li>HallmarkMoviesMysteriesTV[USA]</li><li>Hallmark[USA]</li><li>ProTV[Romania]</li><li>NBCSportsBayArea[USA]</li><li>YesSport1[Israel]</li><li>YesSport2[Israel]</li><li>YesSport3[Israel]</li><li>YesSport4[Israel]</li><li>YesSport5[Israel]</li><li>BBCOne[UK]</li><li>BBCTwo[UK]</li><li>BBCThree[UK]</li><li>BBCFour[UK]</li><li>Fox501[Australia]</li><li>Fox502[Australia]</li><li>Fox503[Australia]</li><li>Fox504[Australia]</li><li>Fox505[Australia]</li><li>Fox506[Australia]</li><li>Fox507[Australia]</li><li>BallySportsSanDiego[USA]</li><li>ServusTV[Germany]</li><li>TBS[USA]</li><li>MovistarDeportes[Spain]</li><li>EllasVamos[Spain]</li><li>DAZN1[Spain]</li><li>DAZN2[Spain]</li><li>TYCSports[Argentina]</li><li>Caracol[Colombia]</li><li>WINSports[Colombia]</li><li>Ecuavisa[Ecuador]</li><li>ESPN[Argentina]</li><li>ESPN2[Argentina]</li><li>ESPN3[Argentina]</li><li>ESPNPremium[Argentina]</li><li>DirecTV[Ecuador]</li><li>GolTV[Ecuador]</li><li>AxsTv[USA]</li><li>GOL[Peru]</li><li>TNT[USA]</li><li>TUDN[Mexico]</li><li>WillowXtra[USA]</li><li>ESPNDeportes[Mexico]</li><li>Premiere1[Brasil]</li><li>Premiere2[Brasil]</li><li>Premiere3[Brasil]</li><li>CartoonNetwork[Italy]</li><li>CartoonNetworkItaly[Italy]</li><li>Boomerang[Italy]</li><li>History[Italy]</li><li>WweNetwork[USA]</li><li>TUDN[USA]</li><li>NBCOlympics1[USA]</li><li>NBCOlympics2[USA]</li><li>ESPN[Argentina]</li><li>WapaTv[USA]</li><li>DirecTVSports[Argentina]</li><li>DirecTVSports2[Argentina]</li><li>FOXSports1[Argentina]</li><li>FOXSports2[Argentina]</li><li>RTSHSport[Albania]</li><li>RTSH1[Albania]</li><li>RTSH2[Albania]</li><li>SkySport1[NewZealand]</li><li>SkySport2[NewZealand]</li><li>SkySport3[NewZealand]</li><li>SkySport4[NewZealand]</li><li>SkySport5[NewZealand]</li><li>SkySport6[NewZealand]</li><li>SkySport7[NewZealand]</li><li>SkySport8[NewZealand]</li><li>SkySport9[NewZealand]</li><li>CBSSportsNetwork[USA]</li><li>FOXSports1[Mexico]</li><li>FOXSports2[Mexico]</li><li>FOXSports3[Mexico]</li><li>LaLigaTV[UK]</li><li>BeINSport1[France]</li><li>BeINSport2[France]</li><li>BeINSport3[France]</li><li>BeINSport4[France]</li><li>DAZN1UK[UK]</li><li>PrimaTV[Romania]</li><li>BBCScotland[UK]</li><li>NBCSPhiladelphia[USA]</li><li>CBSNY[USA]</li><li>SkySportSelect[NewZealand]</li><li>RacingTV[UK]</li><li>RTEOne[Ireland]</li><li>RTETwo[Ireland]</li><li>NBCSCalifornia[USA]</li><li>NBCSBoston[USA]</li><li>BeinSports1[Arab]</li><li>BeinSports2[Arab]</li><li>KHLPrime[Russia]</li><li>KHLTV[Russia]</li><li>OptusSport1[Australia]</li><li>OptusSport2[Australia]</li><li>OptusSport3[Australia]</li><li>OptusSport4[Australia]</li><li>OptusSport5[Australia]</li><li>OptusSport6[Australia]</li><li>AstroCricket[Malaysia]</li><li>PeacockEPLTV[USA]</li><li>PeacockEPL1[USA]</li><li>PeacockEPL2[USA]</li><li>PeacockEPL3[USA]</li><li>PeacockEPL4[USA]</li><li>PeacockEPL5[USA]</li><li>BBCNEWS24[UK]</li><li>RMCSport1[France]</li><li>Premiersport1[Ireland]</li><li>Combate[Brazil]</li><li>ESPN1[Netherlands]</li><li>ESPN2[Netherlands]</li><li>ESPN3[Netherlands]</li><li>Blaze[UK]</li><li>SupersportNews[SouthAfrica]</li><li>UFCFightPass[UK]</li><li>FloRacing[USA]</li><li>ACCNetwork[USA]</li><li>ArenaPremium1[Serbia]</li><li>ArenaPremium2[Serbia]</li><li>ArenaPremium3[Serbia]</li><li>CosmoteSport1[Greece]</li><li>CosmoteSport2[Greece]</li><li>CosmoteSport3[Greece]</li><li>CosmoteSport4[Greece]</li><li>CosmoteSport5[Greece]</li><li>CosmoteSport6[Greece]</li><li>CosmoteSport7[Greece]</li><li>CosmoteSport8[Greece]</li><li>CosmoteSport9[Greece]</li><li>ArenaSport1[Serbia]</li><li>ArenaSport2[Serbia]</li><li>ArenaSport3[Serbia]</li><li>ArenaSport4[Serbia]</li><li>ArenaSport5[Serbia]</li><li>ArenaSport6[Serbia]</li><li>ArenaSport7[Serbia]</li><li>ArenaSport8[Serbia]</li><li>BeinSportsMena1[UK]</li><li>VTM2[Belgium]</li><li>CanalSport[France]</li><li>CanalSport2[France]</li><li>CanalSport360[France]</li><li>BeinSports3[France]</li><li>Film4[UK]</li><li>NFL09[US]</li><li>MAVTV[USA]</li><li>SportsnetOntario[Canada]</li><li>CNNnews[USA]</li><li>DiemaSport2[Bulgaria]</li><li>SupersportsBlitz[SouthAfrica]</li><li>WillowTV[USA]</li><li>BeINSport4max[France]</li><li>WillovTV[USA]</li><li>TV3[Denmark]</li><li>PDCTV[USA]</li><li>SkyDiscoveryHD[UK]</li><li>FoxSports1Backup[USA]</li><li>SkySportsCricket[UK]</li><li>ViaplaySports1[UK]</li><li>ViaplaySports2[UK]</li><li>OutdoorChannel[USA]</li><li>MASN[USA]</li><li>FXX[USA]</li><li>PATV[Pakistan]</li><li>GameShowNetwork[USA]</li><li>MLBNetwork[USA]</li><li>WillowXtra2[USA]</li><li>StarSports1[India]</li><li>StarSports2[India]</li><li>StarSports3[India]</li><li>lecotTNTSports[Argentina]</li><li>MovistarLigadeCampeones1[Spain]</li><li>Eurosport1[Spain]</li><li>Eurosport2[Spain]</li><li>Eurosport1[Germany]</li><li>Eurosport2[Germany]</li><li>DAZNF1[Spain]</li><li>DAZN1[Spain]</li><li>DAZN2[Spain]</li><li>DAZN1[Portugal]</li><li>DAZNLaliga[Spain]</li><li>DaznLaLiga2[Spain]</li><li>Laligahypermotion[Spain]</li><li>SkySportsF1[Germany]</li><li>DiemaSport[Bulgaria]</li><li>NBATV[Portugal]</li><li>SkySportsCalcio[Italy]</li><li>SkySportsUno[Italy]</li><li>BeinSportsMENA3[Argentina]</li><li>FoxSoccerPlus[US]</li><li>S4C[UK]</li><li>RallyTV[UK]</li></ul>
+		</div>
+		<div id="player">
+			<div id="error-message"></div>
+			<iframe allow="encrypted-media" width="640" height="360" scrolling="no" frameborder="0" allowfullscreen="" id="embedded-player"></iframe>
+		</div>
+
+		<script>
+			const guideList = document.querySelector('#guide ul');
+const embeddedPlayer = document.getElementById('embedded-player');
+const errorMessage = document.getElementById('error-message');
+const searchInput = document.getElementById('channel-search');
+let allChannels = [];
+
+// Hardcoded channel list (URLs only)
+const channelUrls = [
+  "SkySportsMainEvent[UK]",
+  "SkySportsNews[UK]",
+  "SkySportsAction[UK]",
+  "SkySportsArena[UK]",
+  "SkySportsF1[UK]",
+  "SkySportsFootball[UK]",
+  "SkySportsPremierLeague[UK]",
+  "SkySportsGolf[UK]",
+  "SkySportsTennis[UK]",
+  "SkySportsMix[UK]",
+  "SkySportsRacing[UK]",
+  "TNTSports1[UK]",
+  "TNTSports2[UK]",
+  "TNTSports3[UK]",
+  "TNTSports4[UK]",
+  "TNTSports5[UK]",
+  "TNTSports6[UK]",
+  "PremierSports1[UK]",
+  "PremierSports2[UK]",
+  "BBCScotland[UK]",
+  "ITV1[UK]",
+  "ITV2[UK]",
+  "ITV3[UK]",
+  "ITV4[UK]",
+  "BTN[USA]",
+  "Canal11[Portugal]",
+  "DigiSport1[Romania]",
+  "DigiSport2[Romania]",
+  "DigiSport3[Romania]",
+  "DigiSport4[Romania]",
+  "ESPN[USA]",
+  "ESPN2[USA]",
+  "ESPNDeportes[USA]",
+  "ESPNU[USA]",
+  "ElevenSports1[Portugal]",
+  "ElevenSports2[Portugal]",
+  "ElevenSports3[Portugal]",
+  "ElevenSports4[Portugal]",
+  "ElevenSports5[Portugal]",
+  "ElevenSports6[Portugal]",
+  "FOXSports1[USA]",
+  "FOXSports2[USA]",
+  "FoxSports506[Australia]",
+  "GOLFChannel[USA]",
+  "NBATV[USA]",
+  "NFLNetwork[USA]",
+  "NFLRedzone[USA]",
+  "NHLNetwork[USA]",
+  "NovaSports1[Greece]",
+  "NovaSports2[Greece]",
+  "NovaSports3[Greece]",
+  "NovaSports4[Greece]",
+  "NovaSports5[Greece]",
+  "NovaSports6[Greece]",
+  "NovaSportsStart[Greece]",
+  "OrangeSport1[Romania]",
+  "OrangeSport2[Romania]",
+  "OrangeSport3[Romania]",
+  "OrangeSport4[Romania]",
+  "PrimaSport1[Romania]",
+  "PrimaSport2[Romania]",
+  "PrimaSport3[Romania]",
+  "PrimaSport4[Romania]",
+  "ProArena[Romania]",
+  "SECNetwork[USA]",
+  "SkyBundesliga[Germany]",
+  "SkyBundesliga1[Germany]",
+  "SkyBundesliga2[Germany]",
+  "SkyBundesliga3[Germany]",
+  "SkyBundesliga4[Germany]",
+  "SkyBundesliga5[Germany]",
+  "SkyBundesliga6[Germany]",
+  "SkyBundesliga7[Germany]",
+  "SkyBundesliga8[Germany]",
+  "SkyBundesliga9[Germany]",
+  "SkySport1[Germany]",
+  "SkySport10[Germany]",
+  "SkySport2[Germany]",
+  "SkySport3[Germany]",
+  "SkySport4[Germany]",
+  "SkySport5[Germany]",
+  "SkySport6[Germany]",
+  "SkySport7[Germany]",
+  "SkySport8[Germany]",
+  "SkySport9[Germany]",
+  "SkySportTennis[Germany]",
+  "SkySportTopEvent[Germany]",
+  "SportTV1[Portugal]",
+  "SportTV2[Portugal]",
+  "SportTV3[Portugal]",
+  "SportTV5[Portugal]",
+  "SportTV4[Portugal]",
+  "SportTV6[Portugal]",
+  "Sportklub[Serbia]",
+  "Sportklub1[Serbia]",
+  "Sportklub2[Serbia]",
+  "Sportklub3[Serbia]",
+  "Sportklub4[Serbia]",
+  "SuperSportAction[SouthAfrica]",
+  "SuperSportCricket[SouthAfrica]",
+  "SuperSportFootball[SouthAfrica]",
+  "SuperSportGolf[SouthAfrica]",
+  "SuperSportGrandstand[SouthAfrica]",
+  "SuperSportLaLiga[SouthAfrica]",
+  "SuperSportMotorsport[SouthAfrica]",
+  "SuperSportPSL[SouthAfrica]",
+  "SuperSportPremierLeague[SouthAfrica]",
+  "SuperSportRugby[SouthAfrica]",
+  "SuperSportTennis[SouthAfrica]",
+  "SuperSportVariety1[SouthAfrica]",
+  "SuperSportVariety2[SouthAfrica]",
+  "SuperSportVariety3[SouthAfrica]",
+  "SuperSportVariety4[SouthAfrica]",
+  "TSN1[Canada]",
+  "TSN2[Canada]",
+  "TSN3[Canada]",
+  "TSN4[Canada]",
+  "TSN5[Canada]",
+  "TennisChannel[USA]",
+  "TennisChannelPlus1[USA]",
+  "TennisChannelPlus10[USA]",
+  "TennisChannelPlus11[USA]",
+  "TennisChannelPlus12[USA]",
+  "TennisChannelPlus13[USA]",
+  "TennisChannelPlus14[USA]",
+  "TennisChannelPlus2[USA]",
+  "TennisChannelPlus3[USA]",
+  "TennisChannelPlus4[USA]",
+  "TennisChannelPlus5[USA]",
+  "TennisChannelPlus6[USA]",
+  "TennisChannelPlus7[USA]",
+  "TennisChannelPlus8[USA]",
+  "TennisChannelPlus9[USA]",
+  "USANetwork[USA]",
+  "DAZN1Deutschland[Germany]",
+  "DAZN2Deutschland[Germany]",
+  "Antena1[Romania]",
+  "YES[USA]",
+  "SportklubFight[Serbia]",
+  "MLBNetwork[USA]",
+  "BallySportsDetroit[USA]",
+  "BallySportsFlorida[USA]",
+  "BallySportsSun[USA]",
+  "BallySportsSanDiego[USA]",
+  "BallySportsMidwest[USA]",
+  "BallySportsNorth[USA]",
+  "BallySportsEast[USA]",
+  "BallySportsWest[USA]",
+  "BallySportsOhio[USA]",
+  "BallySportsOklahoma[USA]",
+  "SportsnetOne[Canada]",
+  "SportsnetPacific[Canada]",
+  "SportsnetOntario[Canada]",
+  "SportsnetEast[Canada]",
+  "SportsnetWest[Canada]",
+  "SportsnetWorld[Canada]",
+  "Sportsnet360[Canada]",
+  "AeNetworks[USA]",
+  "AbcTv[USA]",
+  "AMC[USA]",
+  "AnimalPlanet[USA]",
+  "BBCAmerica[USA]",
+  "BET[USA]",
+  "DisneyChannel[USA]",
+  "FoxNews[USA]",
+  "CBSSN[USA]",
+  "BravoTV[USA]",
+  "CNN[USA]",
+  "InvestigationDiscovery[USA]",
+  "Lifetime[USA]",
+  "History[USA]",
+  "EEntertainement[USA]",
+  "DisneyJR[USA]",
+  "ComedyCentral[USA]",
+  "DestinationAmerica[USA]",
+  "DiscoveryChannel[USA]",
+  "Boomerang[USA]",
+  "FoodNetwork[USA]",
+  "Freeform[USA]",
+  "CNBC[USA]",
+  "CW[USA]",
+  "HLN[USA]",
+  "LifetimeMoviesNetwork[USA]",
+  "ESPNNews[USA]",
+  "Fox[USA]",
+  "Cinemax[USA]",
+  "MSNBC[USA]",
+  "NationalGeographic[USA]",
+  "Syfy[USA]",
+  "Wnyw[USA]",
+  "CBS[USA]",
+  "Univision[USA]",
+  "TvLand[USA]",
+  "TLC[USA]",
+  "HGTV[USA]",
+  "NBC[USA]",
+  "HBO[USA]",
+  "Showtime[USA]",
+  "Nicktoons[USA]",
+  "ABCNews[USA]",
+  "NickelodeonTV[USA]",
+  "HallmarkMoviesMysteriesTV[USA]",
+  "Hallmark[USA]",
+  "ProTV[Romania]",
+  "NBCSportsBayArea[USA]",
+  "YesSport1[Israel]",
+  "YesSport2[Israel]",
+  "YesSport3[Israel]",
+  "YesSport4[Israel]",
+  "YesSport5[Israel]",
+  "BBCOne[UK]",
+  "BBCTwo[UK]",
+  "BBCThree[UK]",
+  "BBCFour[UK]",
+  "Fox501[Australia]",
+  "Fox502[Australia]",
+  "Fox503[Australia]",
+  "Fox504[Australia]",
+  "Fox505[Australia]",
+  "Fox506[Australia]",
+  "Fox507[Australia]",
+  "BallySportsSanDiego[USA]",
+  "ServusTV[Germany]",
+  "TBS[USA]",
+  "MovistarDeportes[Spain]",
+  "EllasVamos[Spain]",
+  "DAZN1[Spain]",
+  "DAZN2[Spain]",
+  "TYCSports[Argentina]",
+  "Caracol[Colombia]",
+  "WINSports[Colombia]",
+  "Ecuavisa[Ecuador]",
+  "ESPN[Argentina]",
+  "ESPN2[Argentina]",
+  "ESPN3[Argentina]",
+  "ESPNPremium[Argentina]",
+  "DirecTV[Ecuador]",
+  "GolTV[Ecuador]",
+  "AxsTv[USA]",
+  "GOL[Peru]",
+  "TNT[USA]",
+  "TUDN[Mexico]",
+  "WillowXtra[USA]",
+  "ESPNDeportes[Mexico]",
+  "Premiere1[Brasil]",
+  "Premiere2[Brasil]",
+  "Premiere3[Brasil]",
+  "CartoonNetwork[Italy]",
+  "CartoonNetworkItaly[Italy]",
+  "Boomerang[Italy]",
+  "History[Italy]",
+  "WweNetwork[USA]",
+  "TUDN[USA]",
+  "NBCOlympics1[USA]",
+  "NBCOlympics2[USA]",
+  "ESPN[Argentina]",
+  "WapaTv[USA]",
+  "DirecTVSports[Argentina]",
+  "DirecTVSports2[Argentina]",
+  "FOXSports1[Argentina]",
+  "FOXSports2[Argentina]",
+  "RTSHSport[Albania]",
+  "RTSH1[Albania]",
+  "RTSH2[Albania]",
+  "SkySport1[NewZealand]",
+  "SkySport2[NewZealand]",
+  "SkySport3[NewZealand]",
+  "SkySport4[NewZealand]",
+  "SkySport5[NewZealand]",
+  "SkySport6[NewZealand]",
+  "SkySport7[NewZealand]",
+  "SkySport8[NewZealand]",
+  "SkySport9[NewZealand]",
+  "CBSSportsNetwork[USA]",
+  "FOXSports1[Mexico]",
+  "FOXSports2[Mexico]",
+  "FOXSports3[Mexico]",
+  "LaLigaTV[UK]",
+  "BeINSport1[France]",
+  "BeINSport2[France]",
+  "BeINSport3[France]",
+  "BeINSport4[France]",
+  "DAZN1UK[UK]",
+  "PrimaTV[Romania]",
+  "BBCScotland[UK]",
+  "NBCSPhiladelphia[USA]",
+  "CBSNY[USA]",
+  "SkySportSelect[NewZealand]",
+  "RacingTV[UK]",
+  "RTEOne[Ireland]",
+  "RTETwo[Ireland]",
+  "NBCSCalifornia[USA]",
+  "NBCSBoston[USA]",
+  "BeinSports1[Arab]",
+  "BeinSports2[Arab]",
+  "KHLPrime[Russia]",
+  "KHLTV[Russia]",
+  "OptusSport1[Australia]",
+  "OptusSport2[Australia]",
+  "OptusSport3[Australia]",
+  "OptusSport4[Australia]",
+  "OptusSport5[Australia]",
+  "OptusSport6[Australia]",
+  "AstroCricket[Malaysia]",
+  "PeacockEPLTV[USA]",
+  "PeacockEPL1[USA]",
+  "PeacockEPL2[USA]",
+  "PeacockEPL3[USA]",
+  "PeacockEPL4[USA]",
+  "PeacockEPL5[USA]",
+  "BBCNEWS24[UK]",
+  "RMCSport1[France]",
+  "Premiersport1[Ireland]",
+  "Combate[Brazil]",
+  "ESPN1[Netherlands]",
+  "ESPN2[Netherlands]",
+  "ESPN3[Netherlands]",
+  "Blaze[UK]",
+  "SupersportNews[SouthAfrica]",
+  "UFCFightPass[UK]",
+  "FloRacing[USA]",
+  "ACCNetwork[USA]",
+  "ArenaPremium1[Serbia]",
+  "ArenaPremium2[Serbia]",
+  "ArenaPremium3[Serbia]",
+  "CosmoteSport1[Greece]",
+  "CosmoteSport2[Greece]",
+  "CosmoteSport3[Greece]",
+  "CosmoteSport4[Greece]",
+  "CosmoteSport5[Greece]",
+  "CosmoteSport6[Greece]",
+  "CosmoteSport7[Greece]",
+  "CosmoteSport8[Greece]",
+  "CosmoteSport9[Greece]",
+  "ArenaSport1[Serbia]",
+  "ArenaSport2[Serbia]",
+  "ArenaSport3[Serbia]",
+  "ArenaSport4[Serbia]",
+  "ArenaSport5[Serbia]",
+  "ArenaSport6[Serbia]",
+  "ArenaSport7[Serbia]",
+  "ArenaSport8[Serbia]",
+  "BeinSportsMena1[UK]",
+  "VTM2[Belgium]",
+  "CanalSport[France]",
+  "CanalSport2[France]",
+  "CanalSport360[France]",
+  "BeinSports3[France]",
+  "Film4[UK]",
+  "NFL09[US]",
+  "MAVTV[USA]",
+  "SportsnetOntario[Canada]",
+  "CNNnews[USA]",
+  "DiemaSport2[Bulgaria]",
+  "SupersportsBlitz[SouthAfrica]",
+  "WillowTV[USA]",
+  "BeINSport4max[France]",
+  "WillovTV[USA]",
+  "TV3[Denmark]",
+  "PDCTV[USA]",
+  "SkyDiscoveryHD[UK]",
+  "FoxSports1Backup[USA]",
+  "SkySportsCricket[UK]",
+  "ViaplaySports1[UK]",
+  "ViaplaySports2[UK]",
+  "OutdoorChannel[USA]",
+  "MASN[USA]",
+  "FXX[USA]",
+  "PATV[Pakistan]",
+  "GameShowNetwork[USA]",
+  "MLBNetwork[USA]",
+  "WillowXtra2[USA]",
+  "StarSports1[India]",
+  "StarSports2[India]",
+  "StarSports3[India]",
+  "lecotTNTSports[Argentina]",
+  "MovistarLigadeCampeones1[Spain]",
+  "Eurosport1[Spain]",
+  "Eurosport2[Spain]",
+  "Eurosport1[Germany]",
+  "Eurosport2[Germany]",
+  "DAZNF1[Spain]",
+  "DAZN1[Spain]",
+  "DAZN2[Spain]",
+  "DAZN1[Portugal]",
+  "DAZNLaliga[Spain]",
+  "DaznLaLiga2[Spain]",
+  "Laligahypermotion[Spain]",
+  "SkySportsF1[Germany]",
+  "DiemaSport[Bulgaria]",
+  "NBATV[Portugal]",
+  "SkySportsCalcio[Italy]",
+  "SkySportsUno[Italy]",
+  "BeinSportsMENA3[Argentina]",
+  "FoxSoccerPlus[US]",
+  "S4C[UK]",
+  "RallyTV[UK]"
+];
+
+function generateChannelName(url) {
+  return url;
+}
+
+function parseChannels(urlData) {
+  const channels = [];
+  urlData.forEach(url => {
+    const channelName = generateChannelName(url);
+    const link = `/active/embed?url=https://topembed.pw/channel/${channelName}`;
+    channels.push({ name: channelName, url: link });
+  });
+  return channels;
+}
+
+function displayChannels(channels) {
+  guideList.innerHTML = '';
+  channels.forEach(channel => {
+    const li = document.createElement('li');
+    li.textContent = channel.name;
+    li.addEventListener('click', () => {
+      let streamUrl = channel.url;
+      if (streamUrl.startsWith('http://')) {
+          streamUrl = streamUrl.replace('http://', 'https://');
+      }
+      embedStream(streamUrl);
+    });
+    guideList.appendChild(li);
+  });
+}
+
+function embedStream(streamUrl) {
+  embeddedPlayer.src = streamUrl;
+
+  embeddedPlayer.onerror = function() {
+    console.error('Embedded player error:', embeddedPlayer.error);
+    errorMessage.textContent = 'Embedded player error: ' + embeddedPlayer.error;
+    errorMessage.style.display = 'block';
+  };
+}
+
+searchInput.addEventListener('input', () => {
+  const searchTerm = searchInput.value.toLowerCase();
+  const filteredChannels = allChannels.filter(channel =>
+    channel.name.toLowerCase().includes(searchTerm)
+  );
+  displayChannels(filteredChannels);
+});
+
+// Load the hardcoded channels
+allChannels = parseChannels(channelUrls);
+displayChannels(allChannels);
+
+		</script>
+
+
+
+</body></html><head>
+	<title>IPTV Guide</title>
+	<style>
+		body {
+			font-family: sans-serif;
+			display: flex;
+			margin: 0;
+			height: 100vh;
+			overflow: hidden;
+		}
+
+		#guide {
+			width: 250px;
+			background-color: #333;
+			color: white;
+			overflow-y: auto;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#search-bar {
+			padding: 10px;
+			background-color: #444;
+			position: sticky;
+			top: 0;
+			z-index: 10;
+		}
+
+		#search-bar input {
+			width: calc(100% - 22px);
+			padding: 8px;
+			background-color: #555;
+			border: none;
+			color: white;
+		}
+
+		#guide ul {
+			list-style: none;
+			padding: 0;
+			margin: 0;
+			overflow-y: auto;
+		}
+
+		#guide li {
+			padding: 10px;
+			cursor: pointer;
+			border-bottom: 1px solid #555;
+		}
+
+		#guide li:hover {
+			background-color: #555;
+		}
+
+		#player {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#embedded-player {
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		#error-message {
+			display: none;
+			background-color: #fdd;
+			padding: 10px;
+			border: 1px solid red;
+			margin: 10px;
+		}
+	</style>
+</head><body>
+	<div id="guide">
+		<div id="search-bar">
+			<input type="text" id="channel-search" placeholder="Search channels...">
+  </div>
+			<ul><li>SkySportsMainEvent[UK]</li><li>SkySportsNews[UK]</li><li>SkySportsAction[UK]</li><li>SkySportsArena[UK]</li><li>SkySportsF1[UK]</li><li>SkySportsFootball[UK]</li><li>SkySportsPremierLeague[UK]</li><li>SkySportsGolf[UK]</li><li>SkySportsTennis[UK]</li><li>SkySportsMix[UK]</li><li>SkySportsRacing[UK]</li><li>TNTSports1[UK]</li><li>TNTSports2[UK]</li><li>TNTSports3[UK]</li><li>TNTSports4[UK]</li><li>TNTSports5[UK]</li><li>TNTSports6[UK]</li><li>PremierSports1[UK]</li><li>PremierSports2[UK]</li><li>BBCScotland[UK]</li><li>ITV1[UK]</li><li>ITV2[UK]</li><li>ITV3[UK]</li><li>ITV4[UK]</li><li>BTN[USA]</li><li>Canal11[Portugal]</li><li>DigiSport1[Romania]</li><li>DigiSport2[Romania]</li><li>DigiSport3[Romania]</li><li>DigiSport4[Romania]</li><li>ESPN[USA]</li><li>ESPN2[USA]</li><li>ESPNDeportes[USA]</li><li>ESPNU[USA]</li><li>ElevenSports1[Portugal]</li><li>ElevenSports2[Portugal]</li><li>ElevenSports3[Portugal]</li><li>ElevenSports4[Portugal]</li><li>ElevenSports5[Portugal]</li><li>ElevenSports6[Portugal]</li><li>FOXSports1[USA]</li><li>FOXSports2[USA]</li><li>FoxSports506[Australia]</li><li>GOLFChannel[USA]</li><li>NBATV[USA]</li><li>NFLNetwork[USA]</li><li>NFLRedzone[USA]</li><li>NHLNetwork[USA]</li><li>NovaSports1[Greece]</li><li>NovaSports2[Greece]</li><li>NovaSports3[Greece]</li><li>NovaSports4[Greece]</li><li>NovaSports5[Greece]</li><li>NovaSports6[Greece]</li><li>NovaSportsStart[Greece]</li><li>OrangeSport1[Romania]</li><li>OrangeSport2[Romania]</li><li>OrangeSport3[Romania]</li><li>OrangeSport4[Romania]</li><li>PrimaSport1[Romania]</li><li>PrimaSport2[Romania]</li><li>PrimaSport3[Romania]</li><li>PrimaSport4[Romania]</li><li>ProArena[Romania]</li><li>SECNetwork[USA]</li><li>SkyBundesliga[Germany]</li><li>SkyBundesliga1[Germany]</li><li>SkyBundesliga2[Germany]</li><li>SkyBundesliga3[Germany]</li><li>SkyBundesliga4[Germany]</li><li>SkyBundesliga5[Germany]</li><li>SkyBundesliga6[Germany]</li><li>SkyBundesliga7[Germany]</li><li>SkyBundesliga8[Germany]</li><li>SkyBundesliga9[Germany]</li><li>SkySport1[Germany]</li><li>SkySport10[Germany]</li><li>SkySport2[Germany]</li><li>SkySport3[Germany]</li><li>SkySport4[Germany]</li><li>SkySport5[Germany]</li><li>SkySport6[Germany]</li><li>SkySport7[Germany]</li><li>SkySport8[Germany]</li><li>SkySport9[Germany]</li><li>SkySportTennis[Germany]</li><li>SkySportTopEvent[Germany]</li><li>SportTV1[Portugal]</li><li>SportTV2[Portugal]</li><li>SportTV3[Portugal]</li><li>SportTV5[Portugal]</li><li>SportTV4[Portugal]</li><li>SportTV6[Portugal]</li><li>Sportklub[Serbia]</li><li>Sportklub1[Serbia]</li><li>Sportklub2[Serbia]</li><li>Sportklub3[Serbia]</li><li>Sportklub4[Serbia]</li><li>SuperSportAction[SouthAfrica]</li><li>SuperSportCricket[SouthAfrica]</li><li>SuperSportFootball[SouthAfrica]</li><li>SuperSportGolf[SouthAfrica]</li><li>SuperSportGrandstand[SouthAfrica]</li><li>SuperSportLaLiga[SouthAfrica]</li><li>SuperSportMotorsport[SouthAfrica]</li><li>SuperSportPSL[SouthAfrica]</li><li>SuperSportPremierLeague[SouthAfrica]</li><li>SuperSportRugby[SouthAfrica]</li><li>SuperSportTennis[SouthAfrica]</li><li>SuperSportVariety1[SouthAfrica]</li><li>SuperSportVariety2[SouthAfrica]</li><li>SuperSportVariety3[SouthAfrica]</li><li>SuperSportVariety4[SouthAfrica]</li><li>TSN1[Canada]</li><li>TSN2[Canada]</li><li>TSN3[Canada]</li><li>TSN4[Canada]</li><li>TSN5[Canada]</li><li>TennisChannel[USA]</li><li>TennisChannelPlus1[USA]</li><li>TennisChannelPlus10[USA]</li><li>TennisChannelPlus11[USA]</li><li>TennisChannelPlus12[USA]</li><li>TennisChannelPlus13[USA]</li><li>TennisChannelPlus14[USA]</li><li>TennisChannelPlus2[USA]</li><li>TennisChannelPlus3[USA]</li><li>TennisChannelPlus4[USA]</li><li>TennisChannelPlus5[USA]</li><li>TennisChannelPlus6[USA]</li><li>TennisChannelPlus7[USA]</li><li>TennisChannelPlus8[USA]</li><li>TennisChannelPlus9[USA]</li><li>USANetwork[USA]</li><li>DAZN1Deutschland[Germany]</li><li>DAZN2Deutschland[Germany]</li><li>Antena1[Romania]</li><li>YES[USA]</li><li>SportklubFight[Serbia]</li><li>MLBNetwork[USA]</li><li>BallySportsDetroit[USA]</li><li>BallySportsFlorida[USA]</li><li>BallySportsSun[USA]</li><li>BallySportsSanDiego[USA]</li><li>BallySportsMidwest[USA]</li><li>BallySportsNorth[USA]</li><li>BallySportsEast[USA]</li><li>BallySportsWest[USA]</li><li>BallySportsOhio[USA]</li><li>BallySportsOklahoma[USA]</li><li>SportsnetOne[Canada]</li><li>SportsnetPacific[Canada]</li><li>SportsnetOntario[Canada]</li><li>SportsnetEast[Canada]</li><li>SportsnetWest[Canada]</li><li>SportsnetWorld[Canada]</li><li>Sportsnet360[Canada]</li><li>AeNetworks[USA]</li><li>AbcTv[USA]</li><li>AMC[USA]</li><li>AnimalPlanet[USA]</li><li>BBCAmerica[USA]</li><li>BET[USA]</li><li>DisneyChannel[USA]</li><li>FoxNews[USA]</li><li>CBSSN[USA]</li><li>BravoTV[USA]</li><li>CNN[USA]</li><li>InvestigationDiscovery[USA]</li><li>Lifetime[USA]</li><li>History[USA]</li><li>EEntertainement[USA]</li><li>DisneyJR[USA]</li><li>ComedyCentral[USA]</li><li>DestinationAmerica[USA]</li><li>DiscoveryChannel[USA]</li><li>Boomerang[USA]</li><li>FoodNetwork[USA]</li><li>Freeform[USA]</li><li>CNBC[USA]</li><li>CW[USA]</li><li>HLN[USA]</li><li>LifetimeMoviesNetwork[USA]</li><li>ESPNNews[USA]</li><li>Fox[USA]</li><li>Cinemax[USA]</li><li>MSNBC[USA]</li><li>NationalGeographic[USA]</li><li>Syfy[USA]</li><li>Wnyw[USA]</li><li>CBS[USA]</li><li>Univision[USA]</li><li>TvLand[USA]</li><li>TLC[USA]</li><li>HGTV[USA]</li><li>NBC[USA]</li><li>HBO[USA]</li><li>Showtime[USA]</li><li>Nicktoons[USA]</li><li>ABCNews[USA]</li><li>NickelodeonTV[USA]</li><li>HallmarkMoviesMysteriesTV[USA]</li><li>Hallmark[USA]</li><li>ProTV[Romania]</li><li>NBCSportsBayArea[USA]</li><li>YesSport1[Israel]</li><li>YesSport2[Israel]</li><li>YesSport3[Israel]</li><li>YesSport4[Israel]</li><li>YesSport5[Israel]</li><li>BBCOne[UK]</li><li>BBCTwo[UK]</li><li>BBCThree[UK]</li><li>BBCFour[UK]</li><li>Fox501[Australia]</li><li>Fox502[Australia]</li><li>Fox503[Australia]</li><li>Fox504[Australia]</li><li>Fox505[Australia]</li><li>Fox506[Australia]</li><li>Fox507[Australia]</li><li>BallySportsSanDiego[USA]</li><li>ServusTV[Germany]</li><li>TBS[USA]</li><li>MovistarDeportes[Spain]</li><li>EllasVamos[Spain]</li><li>DAZN1[Spain]</li><li>DAZN2[Spain]</li><li>TYCSports[Argentina]</li><li>Caracol[Colombia]</li><li>WINSports[Colombia]</li><li>Ecuavisa[Ecuador]</li><li>ESPN[Argentina]</li><li>ESPN2[Argentina]</li><li>ESPN3[Argentina]</li><li>ESPNPremium[Argentina]</li><li>DirecTV[Ecuador]</li><li>GolTV[Ecuador]</li><li>AxsTv[USA]</li><li>GOL[Peru]</li><li>TNT[USA]</li><li>TUDN[Mexico]</li><li>WillowXtra[USA]</li><li>ESPNDeportes[Mexico]</li><li>Premiere1[Brasil]</li><li>Premiere2[Brasil]</li><li>Premiere3[Brasil]</li><li>CartoonNetwork[Italy]</li><li>CartoonNetworkItaly[Italy]</li><li>Boomerang[Italy]</li><li>History[Italy]</li><li>WweNetwork[USA]</li><li>TUDN[USA]</li><li>NBCOlympics1[USA]</li><li>NBCOlympics2[USA]</li><li>ESPN[Argentina]</li><li>WapaTv[USA]</li><li>DirecTVSports[Argentina]</li><li>DirecTVSports2[Argentina]</li><li>FOXSports1[Argentina]</li><li>FOXSports2[Argentina]</li><li>RTSHSport[Albania]</li><li>RTSH1[Albania]</li><li>RTSH2[Albania]</li><li>SkySport1[NewZealand]</li><li>SkySport2[NewZealand]</li><li>SkySport3[NewZealand]</li><li>SkySport4[NewZealand]</li><li>SkySport5[NewZealand]</li><li>SkySport6[NewZealand]</li><li>SkySport7[NewZealand]</li><li>SkySport8[NewZealand]</li><li>SkySport9[NewZealand]</li><li>CBSSportsNetwork[USA]</li><li>FOXSports1[Mexico]</li><li>FOXSports2[Mexico]</li><li>FOXSports3[Mexico]</li><li>LaLigaTV[UK]</li><li>BeINSport1[France]</li><li>BeINSport2[France]</li><li>BeINSport3[France]</li><li>BeINSport4[France]</li><li>DAZN1UK[UK]</li><li>PrimaTV[Romania]</li><li>BBCScotland[UK]</li><li>NBCSPhiladelphia[USA]</li><li>CBSNY[USA]</li><li>SkySportSelect[NewZealand]</li><li>RacingTV[UK]</li><li>RTEOne[Ireland]</li><li>RTETwo[Ireland]</li><li>NBCSCalifornia[USA]</li><li>NBCSBoston[USA]</li><li>BeinSports1[Arab]</li><li>BeinSports2[Arab]</li><li>KHLPrime[Russia]</li><li>KHLTV[Russia]</li><li>OptusSport1[Australia]</li><li>OptusSport2[Australia]</li><li>OptusSport3[Australia]</li><li>OptusSport4[Australia]</li><li>OptusSport5[Australia]</li><li>OptusSport6[Australia]</li><li>AstroCricket[Malaysia]</li><li>PeacockEPLTV[USA]</li><li>PeacockEPL1[USA]</li><li>PeacockEPL2[USA]</li><li>PeacockEPL3[USA]</li><li>PeacockEPL4[USA]</li><li>PeacockEPL5[USA]</li><li>BBCNEWS24[UK]</li><li>RMCSport1[France]</li><li>Premiersport1[Ireland]</li><li>Combate[Brazil]</li><li>ESPN1[Netherlands]</li><li>ESPN2[Netherlands]</li><li>ESPN3[Netherlands]</li><li>Blaze[UK]</li><li>SupersportNews[SouthAfrica]</li><li>UFCFightPass[UK]</li><li>FloRacing[USA]</li><li>ACCNetwork[USA]</li><li>ArenaPremium1[Serbia]</li><li>ArenaPremium2[Serbia]</li><li>ArenaPremium3[Serbia]</li><li>CosmoteSport1[Greece]</li><li>CosmoteSport2[Greece]</li><li>CosmoteSport3[Greece]</li><li>CosmoteSport4[Greece]</li><li>CosmoteSport5[Greece]</li><li>CosmoteSport6[Greece]</li><li>CosmoteSport7[Greece]</li><li>CosmoteSport8[Greece]</li><li>CosmoteSport9[Greece]</li><li>ArenaSport1[Serbia]</li><li>ArenaSport2[Serbia]</li><li>ArenaSport3[Serbia]</li><li>ArenaSport4[Serbia]</li><li>ArenaSport5[Serbia]</li><li>ArenaSport6[Serbia]</li><li>ArenaSport7[Serbia]</li><li>ArenaSport8[Serbia]</li><li>BeinSportsMena1[UK]</li><li>VTM2[Belgium]</li><li>CanalSport[France]</li><li>CanalSport2[France]</li><li>CanalSport360[France]</li><li>BeinSports3[France]</li><li>Film4[UK]</li><li>NFL09[US]</li><li>MAVTV[USA]</li><li>SportsnetOntario[Canada]</li><li>CNNnews[USA]</li><li>DiemaSport2[Bulgaria]</li><li>SupersportsBlitz[SouthAfrica]</li><li>WillowTV[USA]</li><li>BeINSport4max[France]</li><li>WillovTV[USA]</li><li>TV3[Denmark]</li><li>PDCTV[USA]</li><li>SkyDiscoveryHD[UK]</li><li>FoxSports1Backup[USA]</li><li>SkySportsCricket[UK]</li><li>ViaplaySports1[UK]</li><li>ViaplaySports2[UK]</li><li>OutdoorChannel[USA]</li><li>MASN[USA]</li><li>FXX[USA]</li><li>PATV[Pakistan]</li><li>GameShowNetwork[USA]</li><li>MLBNetwork[USA]</li><li>WillowXtra2[USA]</li><li>StarSports1[India]</li><li>StarSports2[India]</li><li>StarSports3[India]</li><li>lecotTNTSports[Argentina]</li><li>MovistarLigadeCampeones1[Spain]</li><li>Eurosport1[Spain]</li><li>Eurosport2[Spain]</li><li>Eurosport1[Germany]</li><li>Eurosport2[Germany]</li><li>DAZNF1[Spain]</li><li>DAZN1[Spain]</li><li>DAZN2[Spain]</li><li>DAZN1[Portugal]</li><li>DAZNLaliga[Spain]</li><li>DaznLaLiga2[Spain]</li><li>Laligahypermotion[Spain]</li><li>SkySportsF1[Germany]</li><li>DiemaSport[Bulgaria]</li><li>NBATV[Portugal]</li><li>SkySportsCalcio[Italy]</li><li>SkySportsUno[Italy]</li><li>BeinSportsMENA3[Argentina]</li><li>FoxSoccerPlus[US]</li><li>S4C[UK]</li><li>RallyTV[UK]</li></ul>
+		</div>
+		<div id="player">
+			<div id="error-message"></div>
+			<iframe allow="encrypted-media" width="640" height="360" scrolling="no" frameborder="0" allowfullscreen="" id="embedded-player"></iframe>
+		</div>
+
+		<script>
+			const guideList = document.querySelector('#guide ul');
+const embeddedPlayer = document.getElementById('embedded-player');
+const errorMessage = document.getElementById('error-message');
+const searchInput = document.getElementById('channel-search');
+let allChannels = [];
+
+// Hardcoded channel list (URLs only)
+const channelUrls = [
+  "SkySportsMainEvent[UK]",
+  "SkySportsNews[UK]",
+  "SkySportsAction[UK]",
+  "SkySportsArena[UK]",
+  "SkySportsF1[UK]",
+  "SkySportsFootball[UK]",
+  "SkySportsPremierLeague[UK]",
+  "SkySportsGolf[UK]",
+  "SkySportsTennis[UK]",
+  "SkySportsMix[UK]",
+  "SkySportsRacing[UK]",
+  "TNTSports1[UK]",
+  "TNTSports2[UK]",
+  "TNTSports3[UK]",
+  "TNTSports4[UK]",
+  "TNTSports5[UK]",
+  "TNTSports6[UK]",
+  "PremierSports1[UK]",
+  "PremierSports2[UK]",
+  "BBCScotland[UK]",
+  "ITV1[UK]",
+  "ITV2[UK]",
+  "ITV3[UK]",
+  "ITV4[UK]",
+  "BTN[USA]",
+  "Canal11[Portugal]",
+  "DigiSport1[Romania]",
+  "DigiSport2[Romania]",
+  "DigiSport3[Romania]",
+  "DigiSport4[Romania]",
+  "ESPN[USA]",
+  "ESPN2[USA]",
+  "ESPNDeportes[USA]",
+  "ESPNU[USA]",
+  "ElevenSports1[Portugal]",
+  "ElevenSports2[Portugal]",
+  "ElevenSports3[Portugal]",
+  "ElevenSports4[Portugal]",
+  "ElevenSports5[Portugal]",
+  "ElevenSports6[Portugal]",
+  "FOXSports1[USA]",
+  "FOXSports2[USA]",
+  "FoxSports506[Australia]",
+  "GOLFChannel[USA]",
+  "NBATV[USA]",
+  "NFLNetwork[USA]",
+  "NFLRedzone[USA]",
+  "NHLNetwork[USA]",
+  "NovaSports1[Greece]",
+  "NovaSports2[Greece]",
+  "NovaSports3[Greece]",
+  "NovaSports4[Greece]",
+  "NovaSports5[Greece]",
+  "NovaSports6[Greece]",
+  "NovaSportsStart[Greece]",
+  "OrangeSport1[Romania]",
+  "OrangeSport2[Romania]",
+  "OrangeSport3[Romania]",
+  "OrangeSport4[Romania]",
+  "PrimaSport1[Romania]",
+  "PrimaSport2[Romania]",
+  "PrimaSport3[Romania]",
+  "PrimaSport4[Romania]",
+  "ProArena[Romania]",
+  "SECNetwork[USA]",
+  "SkyBundesliga[Germany]",
+  "SkyBundesliga1[Germany]",
+  "SkyBundesliga2[Germany]",
+  "SkyBundesliga3[Germany]",
+  "SkyBundesliga4[Germany]",
+  "SkyBundesliga5[Germany]",
+  "SkyBundesliga6[Germany]",
+  "SkyBundesliga7[Germany]",
+  "SkyBundesliga8[Germany]",
+  "SkyBundesliga9[Germany]",
+  "SkySport1[Germany]",
+  "SkySport10[Germany]",
+  "SkySport2[Germany]",
+  "SkySport3[Germany]",
+  "SkySport4[Germany]",
+  "SkySport5[Germany]",
+  "SkySport6[Germany]",
+  "SkySport7[Germany]",
+  "SkySport8[Germany]",
+  "SkySport9[Germany]",
+  "SkySportTennis[Germany]",
+  "SkySportTopEvent[Germany]",
+  "SportTV1[Portugal]",
+  "SportTV2[Portugal]",
+  "SportTV3[Portugal]",
+  "SportTV5[Portugal]",
+  "SportTV4[Portugal]",
+  "SportTV6[Portugal]",
+  "Sportklub[Serbia]",
+  "Sportklub1[Serbia]",
+  "Sportklub2[Serbia]",
+  "Sportklub3[Serbia]",
+  "Sportklub4[Serbia]",
+  "SuperSportAction[SouthAfrica]",
+  "SuperSportCricket[SouthAfrica]",
+  "SuperSportFootball[SouthAfrica]",
+  "SuperSportGolf[SouthAfrica]",
+  "SuperSportGrandstand[SouthAfrica]",
+  "SuperSportLaLiga[SouthAfrica]",
+  "SuperSportMotorsport[SouthAfrica]",
+  "SuperSportPSL[SouthAfrica]",
+  "SuperSportPremierLeague[SouthAfrica]",
+  "SuperSportRugby[SouthAfrica]",
+  "SuperSportTennis[SouthAfrica]",
+  "SuperSportVariety1[SouthAfrica]",
+  "SuperSportVariety2[SouthAfrica]",
+  "SuperSportVariety3[SouthAfrica]",
+  "SuperSportVariety4[SouthAfrica]",
+  "TSN1[Canada]",
+  "TSN2[Canada]",
+  "TSN3[Canada]",
+  "TSN4[Canada]",
+  "TSN5[Canada]",
+  "TennisChannel[USA]",
+  "TennisChannelPlus1[USA]",
+  "TennisChannelPlus10[USA]",
+  "TennisChannelPlus11[USA]",
+  "TennisChannelPlus12[USA]",
+  "TennisChannelPlus13[USA]",
+  "TennisChannelPlus14[USA]",
+  "TennisChannelPlus2[USA]",
+  "TennisChannelPlus3[USA]",
+  "TennisChannelPlus4[USA]",
+  "TennisChannelPlus5[USA]",
+  "TennisChannelPlus6[USA]",
+  "TennisChannelPlus7[USA]",
+  "TennisChannelPlus8[USA]",
+  "TennisChannelPlus9[USA]",
+  "USANetwork[USA]",
+  "DAZN1Deutschland[Germany]",
+  "DAZN2Deutschland[Germany]",
+  "Antena1[Romania]",
+  "YES[USA]",
+  "SportklubFight[Serbia]",
+  "MLBNetwork[USA]",
+  "BallySportsDetroit[USA]",
+  "BallySportsFlorida[USA]",
+  "BallySportsSun[USA]",
+  "BallySportsSanDiego[USA]",
+  "BallySportsMidwest[USA]",
+  "BallySportsNorth[USA]",
+  "BallySportsEast[USA]",
+  "BallySportsWest[USA]",
+  "BallySportsOhio[USA]",
+  "BallySportsOklahoma[USA]",
+  "SportsnetOne[Canada]",
+  "SportsnetPacific[Canada]",
+  "SportsnetOntario[Canada]",
+  "SportsnetEast[Canada]",
+  "SportsnetWest[Canada]",
+  "SportsnetWorld[Canada]",
+  "Sportsnet360[Canada]",
+  "AeNetworks[USA]",
+  "AbcTv[USA]",
+  "AMC[USA]",
+  "AnimalPlanet[USA]",
+  "BBCAmerica[USA]",
+  "BET[USA]",
+  "DisneyChannel[USA]",
+  "FoxNews[USA]",
+  "CBSSN[USA]",
+  "BravoTV[USA]",
+  "CNN[USA]",
+  "InvestigationDiscovery[USA]",
+  "Lifetime[USA]",
+  "History[USA]",
+  "EEntertainement[USA]",
+  "DisneyJR[USA]",
+  "ComedyCentral[USA]",
+  "DestinationAmerica[USA]",
+  "DiscoveryChannel[USA]",
+  "Boomerang[USA]",
+  "FoodNetwork[USA]",
+  "Freeform[USA]",
+  "CNBC[USA]",
+  "CW[USA]",
+  "HLN[USA]",
+  "LifetimeMoviesNetwork[USA]",
+  "ESPNNews[USA]",
+  "Fox[USA]",
+  "Cinemax[USA]",
+  "MSNBC[USA]",
+  "NationalGeographic[USA]",
+  "Syfy[USA]",
+  "Wnyw[USA]",
+  "CBS[USA]",
+  "Univision[USA]",
+  "TvLand[USA]",
+  "TLC[USA]",
+  "HGTV[USA]",
+  "NBC[USA]",
+  "HBO[USA]",
+  "Showtime[USA]",
+  "Nicktoons[USA]",
+  "ABCNews[USA]",
+  "NickelodeonTV[USA]",
+  "HallmarkMoviesMysteriesTV[USA]",
+  "Hallmark[USA]",
+  "ProTV[Romania]",
+  "NBCSportsBayArea[USA]",
+  "YesSport1[Israel]",
+  "YesSport2[Israel]",
+  "YesSport3[Israel]",
+  "YesSport4[Israel]",
+  "YesSport5[Israel]",
+  "BBCOne[UK]",
+  "BBCTwo[UK]",
+  "BBCThree[UK]",
+  "BBCFour[UK]",
+  "Fox501[Australia]",
+  "Fox502[Australia]",
+  "Fox503[Australia]",
+  "Fox504[Australia]",
+  "Fox505[Australia]",
+  "Fox506[Australia]",
+  "Fox507[Australia]",
+  "BallySportsSanDiego[USA]",
+  "ServusTV[Germany]",
+  "TBS[USA]",
+  "MovistarDeportes[Spain]",
+  "EllasVamos[Spain]",
+  "DAZN1[Spain]",
+  "DAZN2[Spain]",
+  "TYCSports[Argentina]",
+  "Caracol[Colombia]",
+  "WINSports[Colombia]",
+  "Ecuavisa[Ecuador]",
+  "ESPN[Argentina]",
+  "ESPN2[Argentina]",
+  "ESPN3[Argentina]",
+  "ESPNPremium[Argentina]",
+  "DirecTV[Ecuador]",
+  "GolTV[Ecuador]",
+  "AxsTv[USA]",
+  "GOL[Peru]",
+  "TNT[USA]",
+  "TUDN[Mexico]",
+  "WillowXtra[USA]",
+  "ESPNDeportes[Mexico]",
+  "Premiere1[Brasil]",
+  "Premiere2[Brasil]",
+  "Premiere3[Brasil]",
+  "CartoonNetwork[Italy]",
+  "CartoonNetworkItaly[Italy]",
+  "Boomerang[Italy]",
+  "History[Italy]",
+  "WweNetwork[USA]",
+  "TUDN[USA]",
+  "NBCOlympics1[USA]",
+  "NBCOlympics2[USA]",
+  "ESPN[Argentina]",
+  "WapaTv[USA]",
+  "DirecTVSports[Argentina]",
+  "DirecTVSports2[Argentina]",
+  "FOXSports1[Argentina]",
+  "FOXSports2[Argentina]",
+  "RTSHSport[Albania]",
+  "RTSH1[Albania]",
+  "RTSH2[Albania]",
+  "SkySport1[NewZealand]",
+  "SkySport2[NewZealand]",
+  "SkySport3[NewZealand]",
+  "SkySport4[NewZealand]",
+  "SkySport5[NewZealand]",
+  "SkySport6[NewZealand]",
+  "SkySport7[NewZealand]",
+  "SkySport8[NewZealand]",
+  "SkySport9[NewZealand]",
+  "CBSSportsNetwork[USA]",
+  "FOXSports1[Mexico]",
+  "FOXSports2[Mexico]",
+  "FOXSports3[Mexico]",
+  "LaLigaTV[UK]",
+  "BeINSport1[France]",
+  "BeINSport2[France]",
+  "BeINSport3[France]",
+  "BeINSport4[France]",
+  "DAZN1UK[UK]",
+  "PrimaTV[Romania]",
+  "BBCScotland[UK]",
+  "NBCSPhiladelphia[USA]",
+  "CBSNY[USA]",
+  "SkySportSelect[NewZealand]",
+  "RacingTV[UK]",
+  "RTEOne[Ireland]",
+  "RTETwo[Ireland]",
+  "NBCSCalifornia[USA]",
+  "NBCSBoston[USA]",
+  "BeinSports1[Arab]",
+  "BeinSports2[Arab]",
+  "KHLPrime[Russia]",
+  "KHLTV[Russia]",
+  "OptusSport1[Australia]",
+  "OptusSport2[Australia]",
+  "OptusSport3[Australia]",
+  "OptusSport4[Australia]",
+  "OptusSport5[Australia]",
+  "OptusSport6[Australia]",
+  "AstroCricket[Malaysia]",
+  "PeacockEPLTV[USA]",
+  "PeacockEPL1[USA]",
+  "PeacockEPL2[USA]",
+  "PeacockEPL3[USA]",
+  "PeacockEPL4[USA]",
+  "PeacockEPL5[USA]",
+  "BBCNEWS24[UK]",
+  "RMCSport1[France]",
+  "Premiersport1[Ireland]",
+  "Combate[Brazil]",
+  "ESPN1[Netherlands]",
+  "ESPN2[Netherlands]",
+  "ESPN3[Netherlands]",
+  "Blaze[UK]",
+  "SupersportNews[SouthAfrica]",
+  "UFCFightPass[UK]",
+  "FloRacing[USA]",
+  "ACCNetwork[USA]",
+  "ArenaPremium1[Serbia]",
+  "ArenaPremium2[Serbia]",
+  "ArenaPremium3[Serbia]",
+  "CosmoteSport1[Greece]",
+  "CosmoteSport2[Greece]",
+  "CosmoteSport3[Greece]",
+  "CosmoteSport4[Greece]",
+  "CosmoteSport5[Greece]",
+  "CosmoteSport6[Greece]",
+  "CosmoteSport7[Greece]",
+  "CosmoteSport8[Greece]",
+  "CosmoteSport9[Greece]",
+  "ArenaSport1[Serbia]",
+  "ArenaSport2[Serbia]",
+  "ArenaSport3[Serbia]",
+  "ArenaSport4[Serbia]",
+  "ArenaSport5[Serbia]",
+  "ArenaSport6[Serbia]",
+  "ArenaSport7[Serbia]",
+  "ArenaSport8[Serbia]",
+  "BeinSportsMena1[UK]",
+  "VTM2[Belgium]",
+  "CanalSport[France]",
+  "CanalSport2[France]",
+  "CanalSport360[France]",
+  "BeinSports3[France]",
+  "Film4[UK]",
+  "NFL09[US]",
+  "MAVTV[USA]",
+  "SportsnetOntario[Canada]",
+  "CNNnews[USA]",
+  "DiemaSport2[Bulgaria]",
+  "SupersportsBlitz[SouthAfrica]",
+  "WillowTV[USA]",
+  "BeINSport4max[France]",
+  "WillovTV[USA]",
+  "TV3[Denmark]",
+  "PDCTV[USA]",
+  "SkyDiscoveryHD[UK]",
+  "FoxSports1Backup[USA]",
+  "SkySportsCricket[UK]",
+  "ViaplaySports1[UK]",
+  "ViaplaySports2[UK]",
+  "OutdoorChannel[USA]",
+  "MASN[USA]",
+  "FXX[USA]",
+  "PATV[Pakistan]",
+  "GameShowNetwork[USA]",
+  "MLBNetwork[USA]",
+  "WillowXtra2[USA]",
+  "StarSports1[India]",
+  "StarSports2[India]",
+  "StarSports3[India]",
+  "lecotTNTSports[Argentina]",
+  "MovistarLigadeCampeones1[Spain]",
+  "Eurosport1[Spain]",
+  "Eurosport2[Spain]",
+  "Eurosport1[Germany]",
+  "Eurosport2[Germany]",
+  "DAZNF1[Spain]",
+  "DAZN1[Spain]",
+  "DAZN2[Spain]",
+  "DAZN1[Portugal]",
+  "DAZNLaliga[Spain]",
+  "DaznLaLiga2[Spain]",
+  "Laligahypermotion[Spain]",
+  "SkySportsF1[Germany]",
+  "DiemaSport[Bulgaria]",
+  "NBATV[Portugal]",
+  "SkySportsCalcio[Italy]",
+  "SkySportsUno[Italy]",
+  "BeinSportsMENA3[Argentina]",
+  "FoxSoccerPlus[US]",
+  "S4C[UK]",
+  "RallyTV[UK]"
+];
+
+function generateChannelName(url) {
+  return url;
+}
+
+function parseChannels(urlData) {
+  const channels = [];
+  urlData.forEach(url => {
+    const channelName = generateChannelName(url);
+    const link = `/active/embed?url=https://topembed.pw/channel/${channelName}`;
+    channels.push({ name: channelName, url: link });
+  });
+  return channels;
+}
+
+function displayChannels(channels) {
+  guideList.innerHTML = '';
+  channels.forEach(channel => {
+    const li = document.createElement('li');
+    li.textContent = channel.name;
+    li.addEventListener('click', () => {
+      let streamUrl = channel.url;
+      if (streamUrl.startsWith('http://')) {
+          streamUrl = streamUrl.replace('http://', 'https://');
+      }
+      embedStream(streamUrl);
+    });
+    guideList.appendChild(li);
+  });
+}
+
+function embedStream(streamUrl) {
+  embeddedPlayer.src = streamUrl;
+
+  embeddedPlayer.onerror = function() {
+    console.error('Embedded player error:', embeddedPlayer.error);
+    errorMessage.textContent = 'Embedded player error: ' + embeddedPlayer.error;
+    errorMessage.style.display = 'block';
+  };
+}
+
+searchInput.addEventListener('input', () => {
+  const searchTerm = searchInput.value.toLowerCase();
+  const filteredChannels = allChannels.filter(channel =>
+    channel.name.toLowerCase().includes(searchTerm)
+  );
+  displayChannels(filteredChannels);
+});
+
+// Load the hardcoded channels
+allChannels = parseChannels(channelUrls);
+displayChannels(allChannels);
+
+		</script>
+
+
+
+</body>
+</html>
